@@ -9,5 +9,8 @@ subprojects/
 *.log
 *.out
 *.run.xml
-
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
 
