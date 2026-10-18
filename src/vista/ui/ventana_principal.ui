@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.2.0 -->
+<interface>
+  <!-- interface-name ventana_principal.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <template class="Ventana" parent="GtkApplicationWindow">
+    <property name="child">
+      <object class="GtkBox" id="vista_general">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkStack" id="stack_vistas">
+            <child>
+              <object class="GtkStackPage" id="vista_canciones">
+                <property name="child">
+                  <object class="GtkScrolledWindow" id="cont_canciones">
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <child>
+                      <object class="GtkListBox" id="lista_canciones">
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="homogeneous">True</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">folder-music-symbolic</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Titulo</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Interprete</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+                <property name="icon-name">go-home</property>
+                <property name="name">vista_canciones</property>
+                <property name="title">Canciones</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage" id="vista_albumes">
+                <property name="child">
+                  <object class="GtkScrolledWindow" id="sw_albumes">
+                    <property name="child">
+                      <object class="GtkFlowBox" id="fb_albumes">
+                        <child>
+                          <object class="GtkFlowBoxChild">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">media-optical-cd-audio-symbolic</property>
+                                    <property name="vexpand">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Titulo</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Artista</property>
+                                    <property name="margin-top">5</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                  </object>
+                </property>
+                <property name="icon-name">media-optical-bd-symbolic</property>
+                <property name="name">vista_albumes</property>
+                <property name="title">Albumes</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage" id="vista_interprete">
+                <property name="child">
+                  <object class="GtkScrolledWindow" id="sw_interpretes">
+                    <property name="child">
+                      <object class="GtkFlowBox" id="fb_interpretes">
+                        <child>
+                          <object class="GtkFlowBoxChild">
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="homogeneous">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">user-info</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Nombre</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
+                    <property name="vexpand">True</property>
+                  </object>
+                </property>
+                <property name="icon-name">system-users</property>
+                <property name="name">vista_interprete</property>
+                <property name="title">Intepretes</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="reproduccion">
+            <property name="margin-bottom">8</property>
+            <property name="margin-end">8</property>
+            <property name="margin-start">8</property>
+            <property name="margin-top">8</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="GtkImage" id="img_reproduccion">
+                <property name="icon-name">folder-music-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="datos_reproduccion">
+                <property name="homogeneous">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel" id="nom_cancion">
+                    <property name="label">Titulo</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="nom_interprete">
+                    <property name="label">Intrerprete</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="control_reproduccion">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkScale" id="estado_reproduccion">
+                    <property name="adjustment">ajuste_playback</property>
+                    <property name="hexpand">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="botones_reproduccion">
+                    <property name="homogeneous">True</property>
+                    <property name="spacing">8</property>
+                    <child>
+                      <object class="GtkButton" id="boton_anterior">
+                        <property name="icon-name">media-skip-backward</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="boton_play">
+                        <property name="icon-name">media-playback-start</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="boton_siguiente">
+                        <property name="icon-name">media-skip-forward-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+    <property name="titlebar">
+      <object class="GtkHeaderBar" id="barra_superior">
+        <property name="title-widget">
+          <object class="GtkLabel" id="nom_aplicacion">
+            <property name="label">BDMusical</property>
+          </object>
+        </property>
+        <child>
+          <object class="GtkStackSwitcher" id="selector_vistas">
+            <property name="stack">stack_vistas</property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+  <object class="GtkAdjustment" id="ajuste_playback">
+    <property name="step-increment">1.0</property>
+    <property name="upper">100.0</property>
+    <property name="value">30.0</property>
+  </object>
+</interface>
