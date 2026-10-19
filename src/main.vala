@@ -1,22 +1,18 @@
 using Gtk;
 
+
 public class Main : Gtk.Application {
-  public Main () {
-    Object (application_id: "Main");
-  }
+	public Main () {
+		Object (application_id: "BDM");
+	}
 
-  public override void activate () {
-    var win = new Gtk.ApplicationWindow (this);
+	public override void activate () {
+		var win = new GUI.Ventana(this);
+		win.present ();
+	}
 
-    var btn = new Gtk.Button.with_label ("Hello World");
-    btn.clicked.connect (win.close);
-
-    win.child = btn;
-    win.present ();
-  }
-
-  public static int main (string[] args) {
-    var app = new Main ();
-    return app.run (args);
-  }
+	public static int main (string[] args) {
+		var app = new Main ();
+		return app.run (args);
+	}
 }
