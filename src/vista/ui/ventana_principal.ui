@@ -3,7 +3,7 @@
 <interface>
   <!-- interface-name ventana_principal.ui -->
   <requires lib="gtk" version="4.20"/>
-  <template class="Ventana" parent="GtkApplicationWindow">
+  <template class="GUIVentana" parent="GtkApplicationWindow">
     <property name="child">
       <object class="GtkBox" id="vista_general">
         <property name="orientation">vertical</property>
@@ -12,7 +12,7 @@
             <child>
               <object class="GtkStackPage" id="vista_canciones">
                 <property name="child">
-                  <object class="GtkScrolledWindow" id="cont_canciones">
+                  <object class="GtkScrolledWindow" id="sw_canciones">
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <child>

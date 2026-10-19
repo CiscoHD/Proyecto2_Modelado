@@ -1,13 +1,13 @@
 using Gtk;
 
+
 public class Main : Gtk.Application {
 	public Main () {
-		Object (application_id: "Main");
+		Object (application_id: "BDM");
 	}
 
 	public override void activate () {
-		var builder 
-
+		var win = new GUI.Ventana(this);
 		win.present ();
 	}
 
