@@ -3,7 +3,7 @@ using Gtk;
 
 public class Main : Gtk.Application {
 	public Main () {
-		Object (application_id: "BDM");
+		Object (application_id: "mx.unam.BDM");
 	}
 
 	public override void activate () {

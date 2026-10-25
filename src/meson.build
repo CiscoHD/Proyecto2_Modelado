@@ -1,15 +1,13 @@
+include_dir = include_directories('modelo/include')
+
 src = [
     'main.vala',
-    'vista/ventana.vala'
+    'vista/ventana.vala',
+    'modelo/minero.c',
+    'vapi/minero.vapi'
 ]
 
 gnome = import('gnome')
-
-dep = [
-    dependency('glib-2.0'),
-    dependency('gobject-2.0'),
-    dependency('gtk4')
-]
 
 resources = gnome.compile_resources(
     'bdm-resources',
@@ -18,12 +16,22 @@ resources = gnome.compile_resources(
     c_name: 'resources'
 )
 
+c_compiler = meson.get_compiler('c')
+id3_dep = c_compiler.find_library('id3tag', required: true)
+
 executable(
     'bd_musical',
     resources,
     sources : src,
-    dependencies : dep,
+    include_directories : include_dir,
+    dependencies : [
+        gobject_dep,
+        glib_dep ,
+        gtk4_dep,
+        id3_dep
+    ],
     vala_args: [
-        '--gresources=' + meson.project_source_root() / 'src/gresource.xml'
+        '--gresources=' + meson.current_source_dir() / 'gresource.xml',
+        '--vapidir=' + meson.current_source_dir() / 'vapi',
     ]
 )

@@ -207,6 +207,11 @@
             <property name="stack">stack_vistas</property>
           </object>
         </child>
+        <child>
+          <object class="GtkButton" id="boton_minero">
+            <property name="icon-name">address-book-new</property>
+          </object>
+        </child>
       </object>
     </property>
   </template>

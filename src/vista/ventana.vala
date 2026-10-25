@@ -31,12 +31,16 @@ namespace GUI {
 		[GtkChild]
 		private unowned Gtk.Button boton_siguiente;
 
+		[GtkChild]
+		private unowned Gtk.Button boton_minero;
+
 		public Ventana(Gtk.Application app) {
 			Object(application : app);
 
 			boton_play.clicked.connect(on_play_clicked);
 			boton_anterior.clicked.connect(on_anterior_clicked);
 			boton_siguiente.clicked.connect(on_siguiente_clicked);
+			boton_minero.clicked.connect(on_minar_clicked);
 		}
 
 		private void on_anterior_clicked() {
@@ -49,6 +53,12 @@ namespace GUI {
 
 		private void on_siguiente_clicked() {
 			stdout.printf("Siguiente presionado\n");
+		}
+
+		private void on_minar_clicked() {
+			stdout.printf("Minar presionado\n");
+			Minero.minar_directorio("/home/elcisco/Musica");
+			//Minero.recuperar_artista("/home/elcisco/Musica/demo.mp3");
 		}
 	}
 }
