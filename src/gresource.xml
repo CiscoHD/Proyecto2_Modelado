@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/BDM">
+  <gresource prefix="/mx/unam/BDM">
     <file>vista/ui/ventana_principal.ui</file>
+    <file compressed="true">rolas.sql</file>
   </gresource>
 </gresources>
