@@ -3,7 +3,7 @@
 <interface>
   <!-- interface-name ventana_principal.ui -->
   <requires lib="gtk" version="4.20"/>
-  <template class="GUIVentana" parent="GtkApplicationWindow">
+  <template class="GuiVentana" parent="GtkApplicationWindow">
     <property name="child">
       <object class="GtkBox" id="vista_general">
         <property name="orientation">vertical</property>
