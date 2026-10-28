@@ -28,7 +28,8 @@ namespace Bdm {
 						if(tipo == FileType.DIRECTORY) {
 							cola.push_tail(elem);
 						} else {
-							Id3.recuperar_artista(elem.get_parse_name());
+							Id3.DatosId3? datos = Id3.recuperar_datos(elem.get_parse_name());
+							stdout.printf("Artista: %s\n", datos.performer);
 						}
 					}
 				} catch (Error e) {
