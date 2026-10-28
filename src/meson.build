@@ -6,7 +6,6 @@ src = [
     'controlador/controlador_botones.vala',
     'modelo/minero.vala',
     'modelo/id3_util.c',
-    'vapi/id3.vapi'
 ]
 
 gnome = import('gnome')
@@ -35,5 +34,6 @@ executable(
     vala_args: [
         '--gresources=' + meson.current_source_dir() / 'gresource.xml',
         '--vapidir=' + meson.current_source_dir() / 'vapi',
+        '--pkg=id3'
     ]
 )
