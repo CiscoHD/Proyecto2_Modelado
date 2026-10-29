@@ -12,9 +12,9 @@ typedef struct {
   char *year;      //TDRC
   char *genre;     //TCON
   char *track;     //TRCK
-} DatosId3;
+} Cancion;
 
-DatosId3* recuperar_datos(char *ruta_archivo);
-void liberar_datos(DatosId3 *datos);
+Cancion* recuperar_datos(char *ruta_archivo);
+void liberar_datos(Cancion *datos);
 
 #endif

@@ -20,7 +20,7 @@ static char* recuperar_artista(struct id3_tag *tag) {
   return (char *) utf8;
 }
 
-DatosId3* recuperar_datos(char *ruta_archivo) {
+Cancion* recuperar_datos(char *ruta_archivo) {
   if(ruta_archivo == NULL) {
     return NULL;
   }
@@ -41,32 +41,32 @@ DatosId3* recuperar_datos(char *ruta_archivo) {
     return NULL;
   }
 
-  DatosId3 *datos = (DatosId3 *) malloc(sizeof(DatosId3));
-  memset(datos, 0, sizeof(DatosId3));
+  Cancion *cancion = (Cancion *) malloc(sizeof(Cancion));
+  memset(cancion, 0, sizeof(Cancion));
   
-  datos->performer = recuperar_artista(tag);
+  cancion->performer = recuperar_artista(tag);
     
-  return datos;
+  return cancion;
 }
 
-void liberar_datos(DatosId3 *datos) {
-  if(!datos)
+void liberar_datos(Cancion *cancion) {
+  if(!cancion)
     return;
   
-  if(datos->performer != NULL)
-    free(datos->performer);
+  if(cancion->performer != NULL)
+    free(cancion->performer);
 
-  if(datos->title != NULL)
-    free(datos->title);
+  if(cancion->title != NULL)
+    free(cancion->title);
 
-  if(datos->year != NULL)
-    free(datos->year);
+  if(cancion->year != NULL)
+    free(cancion->year);
 
-  if(datos->genre != NULL)
-    free(datos->genre);
+  if(cancion->genre != NULL)
+    free(cancion->genre);
 
-  if(datos->track != NULL)
-    free(datos->track);
+  if(cancion->track != NULL)
+    free(cancion->track);
 
-  free(datos);
+  free(cancion);
 }

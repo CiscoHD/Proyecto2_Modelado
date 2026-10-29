@@ -1,4 +1,5 @@
 using GLib;
+using Id3;
 
 namespace Bdm {
 	public class Minero {
@@ -28,8 +29,8 @@ namespace Bdm {
 						if(tipo == FileType.DIRECTORY) {
 							cola.push_tail(elem);
 						} else {
-							Id3.DatosId3? datos = Id3.recuperar_datos(elem.get_parse_name());
-							stdout.printf("Artista: %s\n", datos.performer);
+							Cancion? cancion = recuperar_datos(elem.get_parse_name());
+							agregar_rola(cancion);
 						}
 					}
 				} catch (Error e) {
@@ -37,6 +38,10 @@ namespace Bdm {
 				}
 			}
 			return 0;
+		}
+
+		private void agregar_rola(Cancion cancion) {
+			stdout.printf("Artista: %s\n", cancion.performer);
 		}
 	}
 }
