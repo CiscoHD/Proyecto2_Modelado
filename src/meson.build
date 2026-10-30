@@ -5,6 +5,7 @@ src = [
     'vista/ventana.vala',
     'controlador/controlador_botones.vala',
     'modelo/minero.vala',
+    'modelo/dao.vala',
     'modelo/id3_util.c',
 ]
 
@@ -16,7 +17,6 @@ resources = gnome.compile_resources(
     source_dir: '.',
     c_name: 'resources'
 )
-
 
 executable(
     'bd_musical',
