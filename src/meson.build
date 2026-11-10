@@ -5,8 +5,13 @@ src = [
     'vista/ventana.vala',
     'controlador/controlador_botones.vala',
     'modelo/minero.vala',
+    'modelo/rola.vala',
+    'modelo/album.vala',
+    'modelo/performer.vala',
     'modelo/dao.vala',
-    'modelo/id3_util.c',
+    'modelo/resultado_insertar.vala',
+    'modelo/notificador.vala',
+    'modelo/id3_util.c'
 ]
 
 gnome = import('gnome')
