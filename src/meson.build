@@ -1,15 +1,20 @@
+include_dir = include_directories('modelo/include')
+
 src = [
     'main.vala',
-    'vista/ventana.vala'
+    'vista/ventana.vala',
+    'controlador/controlador_botones.vala',
+    'modelo/minero.vala',
+    'modelo/rola.vala',
+    'modelo/album.vala',
+    'modelo/performer.vala',
+    'modelo/dao.vala',
+    'modelo/resultado_insertar.vala',
+    'modelo/notificador.vala',
+    'modelo/id3_util.c'
 ]
 
 gnome = import('gnome')
-
-dep = [
-    dependency('glib-2.0'),
-    dependency('gobject-2.0'),
-    dependency('gtk4')
-]
 
 resources = gnome.compile_resources(
     'bdm-resources',
@@ -22,8 +27,18 @@ executable(
     'bd_musical',
     resources,
     sources : src,
-    dependencies : dep,
+    include_directories : include_dir,
+    dependencies : [
+        gobject_dep,
+        gio_dep,
+        glib_dep,
+        gtk4_dep,
+        id3_dep,
+        sqlite3_dep
+    ],
     vala_args: [
-        '--gresources=' + meson.project_source_root() / 'src/gresource.xml'
+        '--gresources=' + meson.current_source_dir() / 'gresource.xml',
+        '--vapidir=' + meson.current_source_dir() / 'vapi',
+        '--pkg=id3'
     ]
 )
