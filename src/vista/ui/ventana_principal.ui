@@ -16,12 +16,20 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <child>
-                      <object class="GtkListBox" id="lista_canciones">
+                      <object class="GtkListBox" id="lista_rolas">
                         <child>
                           <object class="GtkListBoxRow">
                             <property name="child">
                               <object class="GtkBox">
+                                <property name="can-focus">False</property>
+                                <property name="can-target">False</property>
+                                <property name="focusable">True</property>
                                 <property name="homogeneous">True</property>
+                                <property name="margin-bottom">8</property>
+                                <property name="margin-end">8</property>
+                                <property name="margin-start">4</property>
+                                <property name="margin-top">4</property>
+                                <property name="spacing">12</property>
                                 <child>
                                   <object class="GtkImage">
                                     <property name="icon-name">folder-music-symbolic</property>
@@ -30,11 +38,27 @@
                                 <child>
                                   <object class="GtkLabel">
                                     <property name="label">Titulo</property>
+                                    <property name="xalign">0.0</property>
                                   </object>
                                 </child>
                                 <child>
                                   <object class="GtkLabel">
-                                    <property name="label">Interprete</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="can-target">False</property>
+                                    <property name="label">Performer</property>
+                                    <property name="xalign">0.0</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Album</property>
+                                    <property name="xalign">0.0</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Genre</property>
+                                    <property name="xalign">0.0</property>
                                   </object>
                                 </child>
                               </object>
@@ -55,34 +79,7 @@
                 <property name="child">
                   <object class="GtkScrolledWindow" id="sw_albumes">
                     <property name="child">
-                      <object class="GtkFlowBox" id="fb_albumes">
-                        <child>
-                          <object class="GtkFlowBoxChild">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">media-optical-cd-audio-symbolic</property>
-                                    <property name="vexpand">True</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Titulo</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Artista</property>
-                                    <property name="margin-top">5</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                      </object>
+                      <object class="GtkFlowBox" id="fb_albums"/>
                     </property>
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
@@ -94,32 +91,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkStackPage" id="vista_interprete">
+              <object class="GtkStackPage" id="vista_performers">
                 <property name="child">
-                  <object class="GtkScrolledWindow" id="sw_interpretes">
+                  <object class="GtkScrolledWindow" id="sw_performers">
                     <property name="child">
-                      <object class="GtkFlowBox" id="fb_interpretes">
-                        <child>
-                          <object class="GtkFlowBoxChild">
-                            <property name="child">
-                              <object class="GtkBox">
-                                <property name="homogeneous">True</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="icon-name">user-info</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label">Nombre</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </child>
-                      </object>
+                      <object class="GtkFlowBox" id="fb_performers"/>
                     </property>
                     <property name="vexpand">True</property>
                   </object>
