@@ -1,3 +1,4 @@
+using GLib;
 using Bdm;
 
 namespace Btn{
@@ -25,8 +26,12 @@ namespace Btn{
 				if (dir != null) {
 					string ruta = dir.get_path ();
 					stdout.printf ("Directorio seleccionado: %s\n", ruta);
-					Minero minero = new Minero(dir);
-					minero.minar();
+					
+					new Thread<void*> ("hilo-minero", () => {
+							Minero minero = new Minero(dir);
+							minero.minar();
+							return null;
+						});
 				}
 			} catch (GLib.Error e) {
 				stderr.printf ("Selección cancelada o error: %s\n", e.message);
