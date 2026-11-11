@@ -3,4 +3,7 @@
 <!-- Created with Cambalache 1.2.0 -->
 <cambalache-project version="1.0.0" target_tk="gtk-4.0">
   <ui template-class="GuiVentana" filename="ventana_principal.ui"/>
+  <ui template-class="GuiDialogoEdicionRola" filename="dialogo_edicion_rola.ui"/>
+  <ui template-class="GuiDialogoEdicionAlbum" filename="dialogo_edicion_album.ui"/>
+  <ui template-class="GuiDialogoEdicionPerformer" filename="dialogo_edicion_performer.ui"/>
 </cambalache-project>
