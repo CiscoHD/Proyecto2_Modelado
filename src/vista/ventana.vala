@@ -6,9 +6,6 @@ namespace Gui {
 	[GtkTemplate (ui = "/mx/unam/BDM/vista/ui/ventana_principal.ui")]
 	public class Ventana : Gtk.ApplicationWindow {
 		[GtkChild]
-		private unowned Gtk.Stack stack_vistas;
-
-		[GtkChild]
 		private unowned Gtk.ListBox lista_rolas;
 
 		[GtkChild]
@@ -16,12 +13,6 @@ namespace Gui {
 
 		[GtkChild]
 		private unowned Gtk.FlowBox fb_performers;
-
-		[GtkChild]
-		private unowned Gtk.Label nom_cancion;
-
-		[GtkChild]
-		private unowned Gtk.Label nom_interprete;
 		
 		[GtkChild]
 		private unowned Gtk.Button boton_anterior;
@@ -85,12 +76,34 @@ namespace Gui {
 			lbl_genre.ellipsize = Pango.EllipsizeMode.END;
 			lbl_genre.max_width_chars = 15;
 			
+			Popover popover = new Popover();
+			Button btn_editar_rola = new Button.with_label("Editar Datos");
+			popover.child = btn_editar_rola;
+			popover.set_parent(box);
+
+			btn_editar_rola.clicked.connect(() => {
+					popover.popdown();
+					Btn.on_editar_rola_clicked(rola, this);
+				});
+
+			GestureClick gesture = new GestureClick();
+			gesture.button = Gdk.BUTTON_SECONDARY;
+
+			gesture.pressed.connect((n_press, x, y) => {
+					Gdk.Rectangle rect = Gdk.Rectangle(); 
+					rect.x = (int) x;
+					rect.y = (int) y;
+					
+					popover.set_pointing_to (rect);
+					popover.popup ();
+				});
 			
             box.append(img);
             box.append(lbl_title);
             box.append(lbl_performer);
 			box.append(lbl_album);
 			box.append(lbl_genre);
+			box.add_controller(gesture);
             return box;
         }
 
@@ -118,9 +131,32 @@ namespace Gui {
 			lbl_year.max_width_chars = 18;
 			lbl_year.justify = Gtk.Justification.CENTER;
 
+			Popover popover = new Popover();
+			Button btn_editar_album = new Button.with_label("Editar Datos");
+			popover.child = btn_editar_album;
+			popover.set_parent(box);
+
+			btn_editar_album.clicked.connect(() => {
+					popover.popdown();
+					Btn.on_editar_album_clicked(album, this);
+				});
+
+			GestureClick gesture = new GestureClick();
+			gesture.button = Gdk.BUTTON_SECONDARY;
+
+			gesture.pressed.connect((n_press, x, y) => {
+					Gdk.Rectangle rect = Gdk.Rectangle(); 
+					rect.x = (int) x;
+					rect.y = (int) y;
+					
+					popover.set_pointing_to (rect);
+					popover.popup ();
+				});
+
 			box.append(img);
 			box.append(lbl_name);
 			box.append(lbl_year);
+			box.add_controller(gesture);
 			return box;
 		}
 
@@ -136,8 +172,31 @@ namespace Gui {
 			lbl_name.max_width_chars = 18;
 			lbl_name.justify = Gtk.Justification.CENTER;
 
+			Popover popover = new Popover();
+			Button btn_editar_performer = new Button.with_label("Editar Datos");
+			popover.child = btn_editar_performer;
+			popover.set_parent(box);
+
+			btn_editar_performer.clicked.connect(() => {
+					popover.popdown();
+					Btn.on_editar_performer_clicked(performer, this);
+				});
+
+			GestureClick gesture = new GestureClick();
+			gesture.button = Gdk.BUTTON_SECONDARY;
+
+			gesture.pressed.connect((n_press, x, y) => {
+					Gdk.Rectangle rect = Gdk.Rectangle(); 
+					rect.x = (int) x;
+					rect.y = (int) y;
+					
+					popover.set_pointing_to (rect);
+					popover.popup ();
+				});
+
 			box.append(img);
 			box.append(lbl_name);
+			box.add_controller(gesture);
 			return box;
 		}
 	}
