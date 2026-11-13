@@ -6,6 +6,15 @@ namespace Gui {
 	[GtkTemplate (ui = "/mx/unam/BDM/vista/ui/ventana_principal.ui")]
 	public class Ventana : Gtk.ApplicationWindow {
 		[GtkChild]
+		private unowned Gtk.ScrolledWindow sw_rolas;
+
+		[GtkChild]
+		private unowned Gtk.ScrolledWindow sw_albums;
+
+		[GtkChild]
+		private unowned Gtk.ScrolledWindow sw_performers;
+		
+		[GtkChild]
 		private unowned Gtk.ListBox lista_rolas;
 
 		[GtkChild]
@@ -15,27 +24,103 @@ namespace Gui {
 		private unowned Gtk.FlowBox fb_performers;
 		
 		[GtkChild]
-		private unowned Gtk.Button boton_anterior;
-
-		[GtkChild]
-		private unowned Gtk.Button boton_play;
-
-		[GtkChild]
-		private unowned Gtk.Button boton_siguiente;
-
-		[GtkChild]
 		private unowned Gtk.Button boton_minero;
+
+		[GtkChild]
+		private unowned Gtk.SearchEntry entry_busqueda;
+		
+		private Gtk.ListBox lista_rolas_principal;
+		private Gtk.FlowBox lista_albums_principal;
+		private Gtk.FlowBox lista_performers_principal;
+
+		private bool en_modo_busqueda = false;
 
 		public Ventana(Gtk.Application app) {
 			Object(application : app);
 
-			boton_play.clicked.connect(Btn.on_play_clicked);
-			boton_anterior.clicked.connect(Btn.on_anterior_clicked);
-			boton_siguiente.clicked.connect(Btn.on_siguiente_clicked);
 			boton_minero.clicked.connect(Btn.on_minar_clicked);
 
 			Notificador notificador = Notificador.get_instancia();
 			notificador.rola_agregada.connect(on_rola_agregada);
+			
+			notificador.rola_editada.connect(on_rola_editada);
+			notificador.album_editado.connect(on_album_editado);
+			notificador.performer_editado.connect(on_performer_editado);
+
+			this.lista_rolas_principal = this.lista_rolas;
+			this.lista_albums_principal = this.fb_albums;
+			this.lista_performers_principal = this.fb_performers;
+			
+			reiniciar_biblioteca();
+			entry_busqueda.search_changed.connect(() => {
+					ejecutar_busqueda(entry_busqueda.text);
+				});
+		}
+
+		private void ejecutar_busqueda(string texto) {
+			Dao dao = Dao.get_instancia();
+			string consulta = texto.strip();
+
+			if(consulta.length == 0) {
+				if(en_modo_busqueda) {
+					sw_rolas.child = lista_rolas_principal;
+					sw_albums.child = lista_albums_principal;
+					sw_performers.child = lista_performers_principal;
+					en_modo_busqueda = false;
+				}
+				return;
+			}
+			
+			List<Rola>  resultados_rolas  = dao.buscar_rolas(consulta);
+			List<Album> resultados_albums = dao.buscar_albums(consulta);
+			List<Performer> resultados_performers = dao.buscar_performers(consulta);
+
+			Gtk.ListBox lista_rolas_resultados = new Gtk.ListBox();
+			lista_rolas_resultados.selection_mode = lista_rolas_principal.selection_mode;
+
+			Gtk.FlowBox lista_albums_resultados = new Gtk.FlowBox();
+			lista_albums_resultados.selection_mode = lista_albums_principal.selection_mode;
+
+			Gtk.FlowBox lista_performers_resultados = new Gtk.FlowBox();
+			lista_performers_resultados.selection_mode = lista_performers_principal.selection_mode;
+					
+			foreach(Rola rola in resultados_rolas) {
+				lista_rolas_resultados.append(crear_fila_rola(rola));
+			}
+
+			foreach(Album album in resultados_albums) {
+				lista_albums_resultados.append(crear_flowbox_album(album));
+			}
+
+			foreach(Performer performer in resultados_performers) {
+				lista_performers_resultados.append(crear_flowbox_performer(performer));
+			}
+
+			sw_rolas.child = lista_rolas_resultados;
+			sw_albums.child = lista_albums_resultados;
+			sw_performers.child = lista_performers_resultados;
+			
+			en_modo_busqueda = true;
+		}
+
+		private void reiniciar_biblioteca() {
+			Dao dao = Dao.get_instancia();
+
+			lista_rolas.remove_all();
+			fb_albums.remove_all(); 
+			fb_performers.remove_all(); 
+
+			foreach(Performer performer in dao.obtener_todo_performer()) {
+				fb_performers.append(crear_flowbox_performer(performer));
+			}
+			
+			foreach(Album album in dao.obtener_todo_album()) {
+				fb_albums.append(crear_flowbox_album(album));
+			}
+			
+			foreach(Rola rola in dao.obtener_toda_rola()) {
+				lista_rolas.append(crear_fila_rola(rola));
+			}
 		}
 
 		private void on_rola_agregada(ResultadoInsertar resul) {
@@ -45,8 +130,50 @@ namespace Gui {
 				fb_performers.append(crear_flowbox_performer(resul.rola.performer));
 			if(resul.rola_insertada) 
 				lista_rolas.append(crear_fila_rola(resul.rola));
+
 		}
 
+		private void on_rola_editada(ResultadoEditarRola resul) {
+			int indice = resul.rola.id;
+
+			ListBoxRow? fila_anterior = lista_rolas.get_row_at_index(indice);
+			if(fila_anterior != null) {
+				lista_rolas.remove(fila_anterior);
+				lista_rolas.insert(crear_fila_rola(resul.rola), indice);
+			}
+			
+			if(resul.es_nuevo_album)
+				fb_albums.append(crear_flowbox_album(resul.rola.album));
+			if(resul.es_nuevo_performer)
+				fb_performers.append(crear_flowbox_performer(resul.rola.performer));
+
+			reiniciar_biblioteca();
+		}
+
+		private void on_album_editado(Album album) {
+			int indice = album.id;
+
+			FlowBoxChild? fbc_anterior = fb_albums.get_child_at_index(indice);
+			if(fbc_anterior != null) {
+				fb_albums.remove(fbc_anterior);
+				fb_albums.append(crear_flowbox_album(album));
+			}
+			
+			reiniciar_biblioteca();
+		}
+
+		private void on_performer_editado(Performer performer) {
+			int indice = performer.id_performer - 1;
+
+			FlowBoxChild? fbc_anterior = fb_performers.get_child_at_index(indice);
+			if(fbc_anterior != null) {
+				fb_performers.remove(fbc_anterior);
+				fb_performers.insert(crear_flowbox_performer(performer), indice);
+			}
+
+			reiniciar_biblioteca();
+		}
+		
 		private Widget crear_fila_rola(Rola rola) {
             Box box = new Box(Orientation.HORIZONTAL, 12);
 			box.homogeneous = true;
@@ -94,8 +221,8 @@ namespace Gui {
 					rect.x = (int) x;
 					rect.y = (int) y;
 					
-					popover.set_pointing_to (rect);
-					popover.popup ();
+					popover.set_pointing_to(rect);
+					popover.popup();
 				});
 			
             box.append(img);
@@ -110,7 +237,7 @@ namespace Gui {
 		private Widget crear_flowbox_album(Album album) {
 			Box box = new Box(Orientation.VERTICAL, 0);
 			//box.set_homogeneous(true);
-			box.set_size_request (140, -1);
+			box.set_size_request(140, -1);
 			box.margin_start = 6;
 			box.margin_end = 6;
 			box.margin_top = 6;
@@ -149,8 +276,8 @@ namespace Gui {
 					rect.x = (int) x;
 					rect.y = (int) y;
 					
-					popover.set_pointing_to (rect);
-					popover.popup ();
+					popover.set_pointing_to(rect);
+					popover.popup();
 				});
 
 			box.append(img);
@@ -190,8 +317,8 @@ namespace Gui {
 					rect.x = (int) x;
 					rect.y = (int) y;
 					
-					popover.set_pointing_to (rect);
-					popover.popup ();
+					popover.set_pointing_to(rect);
+					popover.popup();
 				});
 
 			box.append(img);
