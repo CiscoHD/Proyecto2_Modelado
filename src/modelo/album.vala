@@ -1,12 +1,26 @@
 using GLib;
 
 namespace Bdm {
-	public class Album : Object {
-		public string  path { get; set;}
-		public string  name { get; set;}
-		public int     year { get; set;}
+	public class Album {
+		public int?    id       { get; set;}
+		public string  path     { get; set;}
+		public string  name     { get; set;}
+		public int     year     { get; set;}
 
 		public Album() {}
+
+		public bool equals (Album? other) {
+			if (other == null)
+				return false;
+			
+			if (this == other)
+				return true;
+
+			return this.id == other.id &&
+			       this.path == other.path &&
+			       this.name == other.name &&
+			       this.year == other.year;
+		}
 	}
 
 	public class AlbumBuilder {
@@ -14,6 +28,12 @@ namespace Bdm {
 
 		public AlbumBuilder() {
 			this.album = new Album();
+		}
+
+		public AlbumBuilder with_id(int id_album) {
+			if(id_album >= 0)
+				this.album.id = id_album;
+			return this;
 		}
 
 		public AlbumBuilder with_path(string path) {

@@ -1,15 +1,43 @@
 using GLib;
 
 namespace Bdm {
-	public class Rola : Object {
+	public class Rola {
+		public int?       id        { get; set;}
 		public string     path      { get; set;}
 		public string     title     { get; set;}
 		public int        track     { get; set;}
+		public int        year      { get; set;}
 		public string     genre     { get; set;}
 		public Album?     album     { get; set;}
 		public Performer? performer { get; set;}
 
 		public Rola() {}
+
+		public bool equals (Rola? otra) {
+			if (otra == null)
+				return false;
+			
+			if (this == otra)
+				return true;
+
+			bool album_igual =
+				(this.album == null && otra.album == null) ||
+				(this.album != null && otra.album != null && this.album.equals (otra.album));
+
+			bool performer_igual =
+				(this.performer == null && otra.performer == null) ||
+				(this.performer != null && otra.performer != null && this.performer.equals (otra.performer));
+
+			return
+				this.id == otra.id &&
+				this.path == otra.path &&
+				this.title == otra.title &&
+				this.track == otra.track &&
+				this.year == otra.year &&
+				this.genre == otra.genre &&
+				album_igual &&
+				performer_igual;
+		}
 	}
 
 	public class RolaBuilder {
@@ -17,6 +45,12 @@ namespace Bdm {
 
 		public RolaBuilder() {
 			this.rola = new Rola();
+		}
+
+		public RolaBuilder with_id(int id_rola) {
+			if(id_rola >= 0)
+				this.rola.id = id_rola;
+			return this;
 		}
 
 		public RolaBuilder with_path(string path) {
@@ -38,6 +72,12 @@ namespace Bdm {
 				string num_track = (pos != -1) ? track.substring(0, pos) : track;
 				this.rola.track = int.parse(num_track);
 			}
+			return this;
+		}
+
+		public RolaBuilder with_year(string? year) {
+			if(year != null) 
+				this.rola.year = int.parse(year);
 			return this;
 		}
 		
