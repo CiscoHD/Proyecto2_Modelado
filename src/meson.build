@@ -3,13 +3,20 @@ include_dir = include_directories('modelo/include')
 src = [
     'main.vala',
     'vista/ventana.vala',
+    'vista/dialogo_edicion_rola.vala',
+    'vista/dialogo_edicion_album.vala',
+    'vista/dialogo_edicion_performer.vala',
     'controlador/controlador_botones.vala',
     'modelo/minero.vala',
+    'modelo/editor.vala',
     'modelo/rola.vala',
     'modelo/album.vala',
     'modelo/performer.vala',
+    'modelo/person.vala',
+    'modelo/group.vala',
     'modelo/dao.vala',
     'modelo/resultado_insertar.vala',
+    'modelo/resultado_editar_rola.vala',
     'modelo/notificador.vala',
     'modelo/id3_util.c'
 ]

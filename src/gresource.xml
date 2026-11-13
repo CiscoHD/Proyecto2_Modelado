@@ -2,6 +2,9 @@
 <gresources>
   <gresource prefix="/mx/unam/BDM">
     <file>vista/ui/ventana_principal.ui</file>
+    <file>vista/ui/dialogo_edicion_rola.ui</file>
+    <file>vista/ui/dialogo_edicion_album.ui</file>
+    <file>vista/ui/dialogo_edicion_performer.ui</file>
     <file compressed="true">rolas.sql</file>
   </gresource>
 </gresources>
