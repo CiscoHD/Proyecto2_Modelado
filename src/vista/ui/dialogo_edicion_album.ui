@@ -90,6 +90,7 @@
                             <property name="hexpand">True</property>
                             <property name="placeholder-text">/ruta/al/album</property>
                             <property name="secondary-icon-name">folder-symbolic</property>
+                            <property name="sensitive">False</property>
                             <style>
                               <class name="dim-label"/>
                             </style>

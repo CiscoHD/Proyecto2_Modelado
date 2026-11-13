@@ -171,10 +171,11 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkEntry">
+                          <object class="GtkEntry" id="entry_path">
                             <property name="editable">False</property>
                             <property name="placeholder-text">/ruta/a/la/rola</property>
                             <property name="secondary-icon-name">folder-symbolic</property>
+                            <property name="sensitive">False</property>
                             <style>
                               <class name="dim-label"/>
                             </style>

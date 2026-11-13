@@ -19,6 +19,9 @@
     </property>
     <child internal-child="action_area">
       <object class="GtkBox">
+        <property name="margin-bottom">10</property>
+        <property name="margin-end">10</property>
+        <property name="spacing">12</property>
         <child type="action">
           <object class="GtkButton" id="btn_editar">
             <property name="label">Editar</property>
@@ -90,7 +93,7 @@
                   <object class="GtkStack" id="stack_tipo">
                     <property name="transition-type">slide-left-right</property>
                     <child>
-                      <object class="GtkStackPage">
+                      <object class="GtkStackPage" id="vista_person">
                         <property name="child">
                           <object class="GtkGrid" id="grid_person">
                             <property name="column-spacing">12</property>
@@ -171,7 +174,7 @@
                             <child>
                               <object class="GtkEntry" id="entry_death_date">
                                 <property name="hexpand">True</property>
-                                <property name="placeholder-text">YYYY-MM-DD (Opcional)</property>
+                                <property name="placeholder-text">YYYY-MM-DD</property>
                                 <property name="secondary-icon-name">x-office-calendar-symbolic</property>
                                 <layout>
                                   <property name="column">1</property>
@@ -181,11 +184,11 @@
                             </child>
                           </object>
                         </property>
-                        <property name="name">page_person</property>
+                        <property name="name">vista_person</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkStackPage">
+                      <object class="GtkStackPage" id="vista_group">
                         <property name="child">
                           <object class="GtkGrid" id="grid_group">
                             <property name="column-spacing">12</property>
@@ -255,14 +258,14 @@
                             </child>
                           </object>
                         </property>
-                        <property name="name">page_group</property>
+                        <property name="name">vista_group</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkStackPage">
+                      <object class="GtkStackPage" id="vista_unknown">
                         <property name="child">
                           <object class="GtkLabel">
-                            <property name="label">No hay información adicional para este intérprete.</property>
+                            <property name="label">No hay información adicional para este performer.</property>
                             <property name="margin-bottom">20</property>
                             <property name="margin-top">20</property>
                             <style>
@@ -270,7 +273,7 @@
                             </style>
                           </object>
                         </property>
-                        <property name="name">page_unknown</property>
+                        <property name="name">vista_unknown</property>
                       </object>
                     </child>
                   </object>

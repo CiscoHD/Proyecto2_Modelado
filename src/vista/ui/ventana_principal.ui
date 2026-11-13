@@ -12,13 +12,15 @@
             <child>
               <object class="GtkStackPage" id="vista_canciones">
                 <property name="child">
-                  <object class="GtkScrolledWindow" id="sw_canciones">
+                  <object class="GtkScrolledWindow" id="sw_rolas">
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <child>
                       <object class="GtkListBox" id="lista_rolas">
                         <child>
                           <object class="GtkListBoxRow">
+                            <property name="can-focus">False</property>
+                            <property name="can-target">False</property>
                             <property name="child">
                               <object class="GtkBox">
                                 <property name="can-focus">False</property>
@@ -45,6 +47,7 @@
                                   <object class="GtkLabel">
                                     <property name="can-focus">False</property>
                                     <property name="can-target">False</property>
+                                    <property name="focus-on-click">False</property>
                                     <property name="label">Performer</property>
                                     <property name="xalign">0.0</property>
                                   </object>
@@ -63,6 +66,8 @@
                                 </child>
                               </object>
                             </property>
+                            <property name="focus-on-click">False</property>
+                            <property name="focusable">False</property>
                           </object>
                         </child>
                       </object>
@@ -75,9 +80,9 @@
               </object>
             </child>
             <child>
-              <object class="GtkStackPage" id="vista_albumes">
+              <object class="GtkStackPage" id="vista_albums">
                 <property name="child">
-                  <object class="GtkScrolledWindow" id="sw_albumes">
+                  <object class="GtkScrolledWindow" id="sw_albums">
                     <property name="child">
                       <object class="GtkFlowBox" id="fb_albums"/>
                     </property>
@@ -107,68 +112,6 @@
             </child>
           </object>
         </child>
-        <child>
-          <object class="GtkBox" id="reproduccion">
-            <property name="margin-bottom">8</property>
-            <property name="margin-end">8</property>
-            <property name="margin-start">8</property>
-            <property name="margin-top">8</property>
-            <property name="spacing">12</property>
-            <child>
-              <object class="GtkImage" id="img_reproduccion">
-                <property name="icon-name">folder-music-symbolic</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox" id="datos_reproduccion">
-                <property name="homogeneous">True</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkLabel" id="nom_cancion">
-                    <property name="label">Titulo</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="nom_interprete">
-                    <property name="label">Intrerprete</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox" id="control_reproduccion">
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkScale" id="estado_reproduccion">
-                    <property name="adjustment">ajuste_playback</property>
-                    <property name="hexpand">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox" id="botones_reproduccion">
-                    <property name="homogeneous">True</property>
-                    <property name="spacing">8</property>
-                    <child>
-                      <object class="GtkButton" id="boton_anterior">
-                        <property name="icon-name">media-skip-backward</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="boton_play">
-                        <property name="icon-name">media-playback-start</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="boton_siguiente">
-                        <property name="icon-name">media-skip-forward-symbolic</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
       </object>
     </property>
     <property name="titlebar">
@@ -180,6 +123,7 @@
         </property>
         <child>
           <object class="GtkStackSwitcher" id="selector_vistas">
+            <property name="focusable">True</property>
             <property name="stack">stack_vistas</property>
           </object>
         </child>
@@ -187,6 +131,9 @@
           <object class="GtkButton" id="boton_minero">
             <property name="icon-name">address-book-new</property>
           </object>
+        </child>
+        <child>
+          <object class="GtkSearchEntry" id="entry_busqueda"/>
         </child>
       </object>
     </property>
