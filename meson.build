@@ -1,12 +1,6 @@
 project('proyecto2_BDMusical', ['c', 'vala'])
 
-unity_dep = dependency(
-    'unity',
-    fallback : ['unity', 'unity_dep']
-)
-
 c_compiler = meson.get_compiler('c')
-
 
 glib_dep = dependency('glib-2.0')
 gobject_dep =  dependency('gobject-2.0')
