@@ -49,6 +49,7 @@ namespace Bdm {
 									with_path(ruta_archivo).
 									with_title(datos.title).
 									with_track(datos.track).
+									with_year(datos.year).
 									with_genre(datos.genre).
 									with_album(a).
 									with_performer(p).
