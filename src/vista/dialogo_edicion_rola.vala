@@ -46,7 +46,7 @@ namespace Gui {
 			entry_path.text = r.path;
             entry_title.text = r.title;
             entry_track.text = r.track.to_string();
-			entry_year.text = r.album.year.to_string();
+			entry_year.text = r.year.to_string();
             entry_genre.text = r.genre;
 
 			if(r.album != null) {
@@ -69,19 +69,24 @@ namespace Gui {
 
 		public Rola obtener_rola_editada() {
 			Performer performer = new Bdm.PerformerBuilder()
+				.with_id_performer(rola.performer.id_performer)
+				.with_id_type(2)
 				.with_name(entry_performer_name.text)
                 .build_performer();
 
             Album album = new Bdm.AlbumBuilder()
+				.with_id(rola.album.id)
                 .with_path(rola.album.path)
                 .with_name(entry_album_name.text)
                 .with_year(entry_album_year.text)
                 .build_album();
 
             Rola rola_editada = new Bdm.RolaBuilder()
+				.with_id(rola.id)
                 .with_path(rola.path)
                 .with_title(entry_title.text)
                 .with_track(entry_track.text)
+				.with_year(entry_year.text)
                 .with_genre(entry_genre.text)
                 .with_album(album)
                 .with_performer(performer)
