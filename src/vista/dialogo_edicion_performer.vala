@@ -31,6 +31,9 @@ namespace Gui {
 
 		[GtkChild]
 		private unowned Gtk.Entry entry_end_date;
+		
+		[GtkChild]
+		private unowned Gtk.Entry entry_add_in_group;
 
 		[GtkChild]
 		private unowned Gtk.Image img_performer;

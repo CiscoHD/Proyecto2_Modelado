@@ -190,71 +190,137 @@
                     <child>
                       <object class="GtkStackPage" id="vista_group">
                         <property name="child">
-                          <object class="GtkGrid" id="grid_group">
-                            <property name="column-spacing">12</property>
-                            <property name="row-spacing">10</property>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkLabel">
-                                <property name="label">Name:</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">0</property>
-                                </layout>
+                              <object class="GtkGrid">
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Nombre:</property>
+                                    <property name="xalign">0.0</property>
+                                    <layout>
+                                      <property name="column">0</property>
+                                      <property name="column-span">1</property>
+                                      <property name="row">0</property>
+                                      <property name="row-span">1</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="entry_group_name">
+                                    <property name="hexpand">True</property>
+                                    <property name="margin-bottom">3</property>
+                                    <property name="margin-end">6</property>
+                                    <property name="margin-start">6</property>
+                                    <property name="margin-top">3</property>
+                                    <property name="placeholder-text">Nombre del grupo</property>
+                                    <layout>
+                                      <property name="column">1</property>
+                                      <property name="column-span">1</property>
+                                      <property name="row">0</property>
+                                      <property name="row-span">1</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Fecha incio:</property>
+                                    <property name="xalign">0.0</property>
+                                    <layout>
+                                      <property name="column">0</property>
+                                      <property name="column-span">1</property>
+                                      <property name="row">1</property>
+                                      <property name="row-span">1</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="entry_start_date">
+                                    <property name="hexpand">True</property>
+                                    <property name="margin-bottom">3</property>
+                                    <property name="margin-end">6</property>
+                                    <property name="margin-start">6</property>
+                                    <property name="margin-top">3</property>
+                                    <property name="placeholder-text">AAAA-MM-DD</property>
+                                    <property name="secondary-icon-name">x-office-calendar-symbolic</property>
+                                    <layout>
+                                      <property name="column">1</property>
+                                      <property name="column-span">1</property>
+                                      <property name="row">1</property>
+                                      <property name="row-span">1</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Fecha fin:</property>
+                                    <property name="xalign">0.0</property>
+                                    <layout>
+                                      <property name="column">0</property>
+                                      <property name="column-span">1</property>
+                                      <property name="row">2</property>
+                                      <property name="row-span">1</property>
+                                    </layout>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="entry_end_date">
+                                    <property name="hexpand">True</property>
+                                    <property name="margin-bottom">3</property>
+                                    <property name="margin-end">6</property>
+                                    <property name="margin-start">6</property>
+                                    <property name="margin-top">3</property>
+                                    <property name="placeholder-text">AAAA-MM-DD</property>
+                                    <property name="secondary-icon-name">x-office-calendar-symbolic</property>
+                                    <layout>
+                                      <property name="column">1</property>
+                                      <property name="column-span">1</property>
+                                      <property name="row">2</property>
+                                      <property name="row-span">1</property>
+                                    </layout>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="entry_group_name">
-                                <property name="hexpand">True</property>
-                                <property name="placeholder-text">Nombre del grupo o banda</property>
-                                <property name="secondary-icon-name">system-users-symbolic</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">0</property>
-                                </layout>
+                              <object class="GtkSeparator">
+                                <property name="margin-bottom">6</property>
+                                <property name="margin-top">6</property>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel">
-                                <property name="label">Start Date:</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">1</property>
-                                </layout>
+                              <object class="GtkBox">
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label">Integrantes:</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkEntry" id="entry_add_in_group">
+                                        <property name="hexpand">True</property>
+                                        <property name="margin-bottom">3</property>
+                                        <property name="margin-start">6</property>
+                                        <property name="margin-top">3</property>
+                                        <property name="placeholder-text">Nombre de la persona</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="btn_agregar_miembro">
+                                        <property name="icon-name">list-add-symbolic</property>
+                                        <property name="margin-bottom">3</property>
+                                        <property name="margin-end">6</property>
+                                        <property name="margin-top">3</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="entry_start_date">
-                                <property name="hexpand">True</property>
-                                <property name="placeholder-text">YYYY-MM-DD</property>
-                                <property name="secondary-icon-name">x-office-calendar-symbolic</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">1</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label">End Date:</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">2</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkEntry" id="entry_end_date">
-                                <property name="hexpand">True</property>
-                                <property name="placeholder-text">YYYY-MM-DD (Opcional)</property>
-                                <property name="secondary-icon-name">x-office-calendar-symbolic</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">2</property>
-                                </layout>
-                              </object>
+                              <object class="GtkListBox"/>
                             </child>
                           </object>
                         </property>
