@@ -381,17 +381,7 @@ namespace Bdm {
 			return;
 		}
 
-		public void agregar_rola(Rola rola) {
-			ResultadoInsertar resul_insert;
-			bool album_insertado = false;
-			bool performer_insertado = false;
-
-			if(id_rola(rola) != -1) {
-				resul_insert = new ResultadoInsertar(rola, false, false, false);
-				Notificador.get_instancia().notificar_rola_agregada(resul_insert);
-				stdout.printf("Canción '%s' ya insertada.\n", rola.path);
-				return;
-			}
+		public int agregar_rola(Rola rola) {
 						
 			string insertar =
 				"INSERT INTO rolas (id_performer, id_album, path, title, track, year, genre) VALUES (?, ?, ?, ?, ?, ?, ?);";
@@ -400,30 +390,11 @@ namespace Bdm {
 			int res = db.prepare_v2(insertar, insertar.length, out stmt);
 			if (res != OK) {
 				stderr.printf("Error: %d: %s\n", db.errcode(), db.errmsg());
-				return;
+				return -1;
 			}
 			
-			int id_performer = id_performer(rola.performer);
-			if(id_performer == -1){
-				id_performer = agregar_performer(rola.performer);
-				performer_insertado = true;
-			} else
-				stdout.printf("Se encontró perfomer '%s' \n", rola.performer.name);
-
-			int id_album = id_album(rola.album);
-			if(id_album == -1) {
-				id_album = agregar_album(rola.album);
-				album_insertado = true;
-			} else
-				stdout.printf("Se encontró album '%s' \n", rola.album.name);
-			
-			stmt.bind_int (1, id_performer);
-			rola.performer.id_performer = id_performer;
-			rola.performer.id_type = 2;       // Type: 2 -> "Unknown"
-			
-			stmt.bind_int (2, id_album);
-			rola.album.id = id_album;
-			
+			stmt.bind_int (1, rola.performer.id_performer);
+			stmt.bind_int (2, rola.album.id);
 			stmt.bind_text(3, rola.path);
 			stmt.bind_text(4, rola.title);
 			stmt.bind_int (5, rola.track);
@@ -433,13 +404,11 @@ namespace Bdm {
 			res = stmt.step();
 			if (res != DONE) {
 				stderr.printf("Error al ejecutar la inserción: %s\n", db.errmsg());
-				return;
+				return -1;
 			}
 
-			rola.id = (int) db.last_insert_rowid();
-			resul_insert = new ResultadoInsertar(rola, true, album_insertado, performer_insertado);
-			Notificador.get_instancia().notificar_rola_agregada(resul_insert);
 			stdout.printf("Canción '%s' insertada correctamente.\n", rola.path);
+			return (int) db.last_insert_rowid();
 		}
 
 		
@@ -623,7 +592,7 @@ namespace Bdm {
 			int res = db.prepare_v2(buscar, buscar.length, out stmt_buscar);
 			if(res != OK) {
 				stderr.printf("Error al preparar: %d: %s\n", db.errcode(), db.errmsg());
-				return -1;
+				return -2;
 			}
 
 			stmt_buscar.bind_text(1, a.path);
@@ -647,7 +616,7 @@ namespace Bdm {
 			int res = db.prepare_v2(buscar, buscar.length, out stmt_buscar);
 			if(res != OK) {
 				stderr.printf("Error al preparar: %d: %s\n", db.errcode(), db.errmsg());
-				return -1;
+				return -2;
 			}
 
 			stmt_buscar.bind_text(1, p.name);
