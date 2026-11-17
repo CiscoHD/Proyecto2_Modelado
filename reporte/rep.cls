@@ -9,7 +9,7 @@
 % bienvenida en el correo del autor: axelpadilla@ciencias.unam.mx
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{replab}[2022/12/20 v1.0]
+\ProvidesClass{rep}[2022/12/20 v1.0]
 
 % --- Configuración básica ---
 

@@ -4,6 +4,7 @@ reporte/auto/
 subprojects/
 !subprojects/*.wrap
 
+*_region_.tex
 *.aux
 *.bcf
 *.log

@@ -5,7 +5,7 @@
 
 \date{\today}
 
-\subtitle={Reporte técnico de ...}
+\subtitle={Reporte técnico de aplicación: Base de Datos Musical}
 \email={\href{mailto:ciscohdz@ciencias.unam.mx}{\color{principaluno}\texttt{ciscohdz@ciencias.unam.mx}}}
 \subject={Modelado y programación}
 
@@ -28,8 +28,32 @@
 			{\begin{tcolorbox}[colframe=white, colback=principaldos, arc=8pt]
 				\begin{onecolabstract}
 
-                 
-
+                  La gestión de colecciones locales de música digital
+                  suele verse limitada por metadatos desorganizados y
+                  por herramientas que alteran los ficheros de audio
+                  originales al modificar su información. Para
+                  resolver esta problemática, se desarrolló una
+                  aplicación orientada a la catalogación, búsqueda y
+                  edición de bibliotecas musicales en formato MP3
+                  mediante el uso de una base de datos relacional. En
+                  el sistema se implementa un 'minero' de directorios
+                  capaz de extraer etiquetas ID3v2.4, una capa de
+                  persistencia con operaciones para inserción,
+                  actualización y busqueda de registros sin necesidad
+                  de escribir sentencias SQL, así como una interfaz
+                  gráfica que permite editar metadatos y clasificar
+                  intérpretes entre individuos y agrupaciones
+                  musicales. La solución fue construida bajo el
+                  sistema de construcción Meson utilizando los
+                  lenguajes Vala y C apoyándose en las bibliotecas
+                  GLib, GObject y GIO para el modelo de objetos y
+                  eventos; GTK4 para la interfaz de usuario; libid3tag
+                  para la lectura de metadatos; y SQLite3 como motor
+                  de almacenamiento. Como resultado, se obtuvo un
+                  gestor musical que sincroniza en tiempo real las
+                  modificaciones realizadas en la base de datos con
+                  las vistas gráficas.
+                  
 				\end{onecolabstract}
 			\end{tcolorbox}}
 
@@ -42,6 +66,187 @@
 % --- Cuerpo del reporte ---
 	
 	\section{Introducción}
+
+    El objetivo de este segundo proyecto es crear un sistema capaz de
+    crear y manejar una base de datos musical, se especifica el uso
+    de la biblioteca SQLite3 como motor para la base de datos.
+
+    A través de una interfaz gráfica, el sistema podrá recibir un
+    diectorio que almacene archivos musicales con etiquetas id3v2.4 y
+    que, al recorrerlo, obtenga la información con la que poblar
+    nuestra base de datos.Además, se busca que el usuario pueda
+    explorar su colección, actualizar registros y clasificar
+    intérpretes sin alterar los archivos MP3 en disco y sin requerir
+    conocimientos del lenguaje SQL para efectuar búsquedas.
+    
+    \section{Modelado}
+
+    Habiendo establecido las necesidades del sistema y los objetivos a
+    cumplir, modelaremos la solución analizando detalladamente los
+    requerimientos para dividir cada problema en pequeños fragmentos
+    más manejables para, posteriormente, diseñar componentes que los
+    resuelvan.
+
+    \subsection{Análisis}
+
+    De manera general, la primera división surge de la necesidad de
+    aislar las responsabilidades del sistema. Esto nos permite
+    garantizar que las operaciones de entrada, procesamiento y salida
+    estén repartidas y delitmitadas. 
+    
+    El sistema tiene que resolver: el minado (como denominamos a la
+    obtención de datos de archivos mp3); la edición de los registros
+    en la base datos; la búsqueda de registros en la base de datos; la
+    reproducción de contenido multimedia; el manejo de las operaciones
+    sobre la base de datos; asi como la visualización y entrada de los
+    datos provenientes del usuario.
+
+    De modo que dichas responsabilidades se pueden abstraer en los
+    componentes: Vista, Minero, Editor, Buscador, Reproductor y
+    Manejador de la base de datos.
+
+    Ahora detallaremos con mayor profundidad cada uno de los
+    componentes para entender los problemas que buscan resolver.
+
+    \subsubsection{Vista}
+    
+    La \textbf{Vista}, al ser la parte más cercana al usuario, debe permitir
+    interacciones tanto de entrada como de salida.
+
+    Se deberá poder permitir:
+    \begin{enumerate}
+    \item Visualizar y editar la información de las canciones y álbumes
+    \item Definir a un intérprete como persona o grupo
+    \item Agregar personas a grupos
+    \item Consultar títulos, intérpretes o álbumes de las canciones.
+    \end{enumerate}
+
+    %% Quiero saber si es necesario agregar más. 
+    En ese sentido debe proveer información clara sobre el estado
+    actual de la base de datos. Además los elementos interactivos
+    tiene que estar organizados de manera que se pueda diferenciar las
+    funcionalidades que provee el sistema.
+    
+    \subsubsection{Minero}
+
+    Como se ha especificado, el \textbf{Minero} tiene que recorrer un
+    directorio; por cada archivo mp3 con etiquetas id3v2.4 que
+    encuentre debe obtener los metadatos de dicha canción y enviarlos
+    al Manejador de la base de datos para que sean ingresado a la misma.
+    
+    Se intentará leer las siguientes etiquetas ID3v2.4:
+
+    %% Mantener tal cual
+    \begin{enumerate}
+    \item \textbf{TPE1}, \textit{Lead performer(s)/Soloist(s)}, el
+      intérprete de la canción.
+    \item \textbf{TIT2}, \textit{Title/songname/content} description,
+      el título de la canción.
+    \item \textbf{TALB}, \textit{Album/Movie/Show title}, el nombre
+      del álbum.
+    \item \textbf{TDRC}, \textit{Recording time}, la fecha de
+      grabación; usualmente el año basta.
+    \item \textbf{TCON}, \textit{Content type}, el tipo del contenido;
+      el género, normalmente.
+    \item \textbf{TRCK}, \textit{Track number/Position in set}, el
+      número de pista (un entero) o posición en el álbum (en el
+      formato “3/10”, tercera de diez pistas).
+    \end{enumerate}
+
+    %% Quiero decirlo de otra forma
+    Además de las etiquetas id3, el proceso de minado también debe
+    obtener datos como:
+    
+    \begin{enumerate}
+    \item Ruta al archivo mp3
+    \item Ruta al directorio que contiene al archivo mp3.
+    \item Nombre del archivo mp3
+    \item Año de creación del archivo mp3
+    \end{enumerate}
+
+    %% Me gustaría dejar en claro la necesidad del Notificador sin
+    %% introducirlo formalmente hasta el Diseño. 
+    Cada que se agregue correctamente un registro a la base de datos
+    el minero debe poder informar a la Vista los cambios que se
+    hicieron en la base de datos.
+
+    Para garantizar la consistencia entre la información ingresada a
+    la base de datos con la que se presenta al usuario, el proceso de
+    minado requiere un mecanismo de comunicación. Cada vez que un
+    registro se inserta con éxito, el sistema debe ser capaz de emitir
+    un aviso para que la Vista refleje las modificaciones. 
+    
+    \subsubsection{Editor}
+
+    El \textbf{Editor} debe actualizar los registros en la base de
+    datos, procesando las modificaciones que el usuario solicite a
+    través de las opciones que establece la Vista.
+    
+    De manera general notamos que la edición de la base de datos se
+    puede dividir en tres grupos: la edicion de canciones, la edición
+    de álbumes y la edición de intérpretes. Editar cada una de la
+    partes implica diferentes procesos, desde la forma en que se
+    presenta la información a editar hasta las comprobaciones que
+    deben hacerse para efectuar el cambio que se pretende hacer. 
+
+    Si queremos editar una canción lo primero que notamos es que
+    podemos modificar su titulo, \textit{track}, año de lanzamiento y
+    género al que pertenece, pero también debe existir la posibilidad
+    de cambiar únicamente esa canción de album así como de intérprete.
+
+    Por su parte. al editar un álbum podemos modificar su nombre y el
+    año de lanzamiento del mismo. Hacer modificaciones directamente a
+    un álbum implica que todas las canciones que estén vinculadas a
+    éste reflejen los cambios realizados.
+
+    Ahora bien, para modificar un intérprete necesitamos saber si se
+    trata de una persona o de un grupo. Sabiendo lo anterior, si el
+    intérprete resulta ser una persona podemos editar el nombre
+    artístico, su nombre real, su fecha de nacimiento o de defunción
+    (si aplica); si es un grupo podemos editar su nombre, su fecha de
+    inicio o de término (si aplica). Hacemos notar que los cambios de
+    persona a grupo y viceversa deben ser posibles. 
+
+    Una vez el usuario determine qué cambios hacer y con qué datos, el
+    Editor solicita al Manejador que se apliquen directamente en la
+    base de datos e informa a la Vista sobre aquellos que sí fueron
+    realizados para su respectiva actualización.
+    
+    \subsubsection{Buscador}
+
+    La responsabilidad del \textbf{Buscador} radica en interpretar
+    parámetros de consulta provistos desde la interfaz gráfica y
+    traducirlos en peticiones de filtrado que el Manejador pueda
+    procesar.
+
+    Dadas las relacionales en la información musical, una consulta no
+    se limita únicamente a las propiedades directas de una
+    canción. Realizar búsquedas permite al usuario utilizar criterios
+    combinados y dependencias (como el nombre del álbum, el género o
+    la clasificación del intérprete) para refinar los resultados
+    obtenidos.
+
+    \subsubsection{Manejador de la Base de Datos}
+
+    El \textbf{Manejador} debe servir como el único punto de contacto
+    con la base de datos, proporcionando a los demás componentes una
+    estandarizada para insertar, actualizar y consultar información
+    sin que estos necesiten conocer los detalles. 
+
+    \subsubsection{Reproductor}
+
+    Finalmente, el \textbf{Reproductor} tiene la tarea de gestionar el
+    flujo de audio de los archivos seleccionados por el usuario. Debe
+    ser capaz de iniciar, pausar y detener la reproducción multimedia
+    comunicándose de manera independiente con el resto del sistema,
+    asegurando que la escucha de la biblioteca musical no interrumpa
+    la exploración ni la edición de la base de datos en la Vista.
+
+    \subsection{Diseño}
+
+    \section{Implementación}
+
+    \section{Conclusiones}
 
     \printbibliography[heading=bibintoc]
 	
