@@ -60,17 +60,21 @@ namespace Bdm {
 		public static void editar_performer(Performer original, Performer editado) {
 			Dao dao = Dao.get_instancia();
 			
-			if(original.equals(editado)) {
-				stdout.printf("No se editó el performer\n");
-				return;
-			}
+			//if(original.equals(editado)) {
+			//	stdout.printf("No se editó el performer\n");
+			//	return;
+			//}
 
 			dao.actualizar_performer(editado);
 			
-			if(original is Person && !(editado is Person)) 
+			if(original is Person && !(editado is Person))  {
 				dao.eliminar_person((Person) original);
-			else if(original is Group && !(editado is Group))
+				
+			}
+			else if(original is Group && !(editado is Group)){
 				dao.eliminar_group((Group) original);
+				dao.eliminar_persons_in_group((Group) original);
+			}
 
 			if(editado is Person) {
 				Person person = (Person) editado;
@@ -82,7 +86,6 @@ namespace Bdm {
 					person.id_person = id_person;
 					dao.actualizar_person(person);
 				}
-				
 			} else if(editado is Group) {
 				Group group = (Group) editado;
 				int id_group = dao.id_group(group);
@@ -94,9 +97,42 @@ namespace Bdm {
 					group.id_group = id_group;
 					dao.actualizar_group(group);
 				}
+
+				if (original is Group) {
+					Group group_original = (Group) original;
+					foreach (Person p_anterior in group_original.integrantes) {
+						if (!contiene_person(group.integrantes, p_anterior)) {
+							dao.eliminar_person_in_group(p_anterior, group);
+						}
+					}
+				}
+
+				foreach(Person p in group.integrantes) {
+					int id_person = dao.id_person(p);
+
+					if(id_person == -1) 
+						id_person = dao.agregar_person(p);
+					p.id_person = id_person;
+
+					if(!dao.person_in_group(p, group)) {
+						dao.agregar_person_in_group(p, group);
+					}
+				}
 			}
 
 			Notificador.get_instancia().notificar_performer_editado(editado);
+		}
+
+		private static bool contiene_person(List<Person> lista, Person objetivo) {
+			foreach (Person p in lista) {
+				if (p.id_person != null && objetivo.id_person != null) {
+					if (p.id_person == objetivo.id_person)
+						return true;
+				} else if (p.stage_name == objetivo.stage_name) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

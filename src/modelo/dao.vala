@@ -65,8 +65,8 @@ namespace Bdm {
 				FROM rolas r
 				LEFT JOIN albums a        ON r.id_album = a.id_album
 				LEFT JOIN performers perf ON r.id_performer = perf.id_performer
-				LEFT JOIN persons p       ON perf.id_performer = p.id_person
-				LEFT JOIN groups g        ON perf.id_performer = g.id_group
+				LEFT JOIN persons p       ON perf.id_type = 0 AND perf.name = p.stage_name
+				LEFT JOIN groups g        ON perf.id_type = 1 AND perf.name = g.name
 				WHERE r.title LIKE ?1
 				   OR a.name LIKE ?1
 				   OR perf.name LIKE ?1
@@ -190,8 +190,8 @@ namespace Bdm {
 				       p.id_person, p.stage_name, p.real_name, p.birth_date, p.death_date,
 				       g.id_group, g.start_date, g.end_date
 				FROM performers perf
-				LEFT JOIN persons p ON perf.id_performer = p.id_person
-				LEFT JOIN groups g  ON perf.id_performer = g.id_group
+				LEFT JOIN persons p ON perf.id_type = 0 AND perf.name = p.stage_name
+				LEFT JOIN groups g  ON perf.id_type = 1 AND perf.name = g.name
 				WHERE perf.name LIKE ?1
 					   OR p.stage_name LIKE ?1
 					   OR p.real_name LIKE ?1
@@ -228,13 +228,15 @@ namespace Bdm {
 					lista_performers.append(person);
 					break;
 
-				case 1: 
+				case 1:
+					int id_group = stmt.column_int(8);
 					Group group = new GroupBuilder()
 						.with_id_performer(id_perf)
 						.with_name(name)
-						.with_id_group(stmt.column_int(8))
+						.with_id_group(id_group)
 						.with_start_date(stmt.column_text(9))
 						.with_end_date(stmt.column_text(10))
+						.with_integrantes(obtener_integrantes_group(id_group))
 						.build_group();
 
 					lista_performers.append(group);
@@ -254,6 +256,38 @@ namespace Bdm {
 			
 			return lista_performers;
 		}
+
+		private List<Person> obtener_integrantes_group(int id_group) {
+			List<Person> integrantes = new List<Person>();
+			string buscar = """
+				SELECT p.id_person, p.stage_name, p.real_name, p.birth_date, p.death_date
+				FROM persons p
+				INNER JOIN in_group ig ON p.id_person = ig.id_person
+				WHERE ig.id_group = ?
+				ORDER BY p.stage_name ASC;
+			""";
+
+			Statement stmt;
+			if (db.prepare_v2(buscar, buscar.length, out stmt) != OK) {
+				stderr.printf("Error en obtener_integrantes_grupo: %s\n", db.errmsg());
+				return integrantes;
+			}
+
+			stmt.bind_int(1, id_group);
+
+			while (stmt.step() == ROW) {
+				Person p = new PersonBuilder()
+					.with_id_person(stmt.column_int(0))
+					.with_stage_name(stmt.column_text(1))
+					.with_real_name(stmt.column_text(2))
+					.with_birth_date(stmt.column_text(3))
+					.with_death_date(stmt.column_text(4))
+					.build_person();
+				integrantes.append(p);
+			}
+			return integrantes;
+		}
+
 
 		public void actualizar_rola(Rola r) {
 			string actualizar =
@@ -460,7 +494,7 @@ namespace Bdm {
 
 		public int agregar_person(Person person) {
 			string insertar =
-				"INSERT INTO persons (id_person, stage_name, real_name, birth_date, death_date) VALUES (?, ?, ?, ?, ?);";
+				"INSERT INTO persons (stage_name, real_name, birth_date, death_date) VALUES (?, ?, ?, ?);";
 
 			Statement stmt;
 			int res = db.prepare_v2(insertar, insertar.length, out stmt);
@@ -469,11 +503,10 @@ namespace Bdm {
 				return -1;
 			}
 
-			stmt.bind_int (1, person.id_person);
-			stmt.bind_text(2, person.stage_name);
-			stmt.bind_text(3, person.real_name);
-			stmt.bind_text(4, person.birth_date);
-			stmt.bind_text(5, person.death_date);
+			stmt.bind_text(1, person.stage_name);
+			stmt.bind_text(2, person.real_name);
+			stmt.bind_text(3, person.birth_date);
+			stmt.bind_text(4, person.death_date);
 			
 			res = stmt.step();
 			if(res != DONE) {
@@ -486,7 +519,7 @@ namespace Bdm {
 
 		public int agregar_group(Group group) {
 			string insertar =
-				"INSERT INTO groups (id_group, name, start_date, end_date) VALUES (?, ?, ?, ?);";
+				"INSERT INTO groups (name, start_date, end_date) VALUES (?, ?, ?);";
 
 			Statement stmt;
 			int res = db.prepare_v2(insertar, insertar.length, out stmt);
@@ -495,10 +528,9 @@ namespace Bdm {
 				return -1;
 			}
 
-			stmt.bind_int (1, group.id_group);
-			stmt.bind_text(2, group.name);
-			stmt.bind_text(3, group.start_date);
-			stmt.bind_text(4, group.end_date);
+			stmt.bind_text(1, group.name);
+			stmt.bind_text(2, group.start_date);
+			stmt.bind_text(3, group.end_date);
 			
 			res = stmt.step();
 			if(res != DONE) {
@@ -507,6 +539,29 @@ namespace Bdm {
 			}
 			
 			return (int) db.last_insert_rowid();
+		}
+
+		public void agregar_person_in_group(Person person, Group group) {
+			string insertar =
+				"INSERT INTO in_group (id_person, id_group) VALUES (?, ?);";
+
+				Statement stmt;
+			int res = db.prepare_v2(insertar, insertar.length, out stmt);
+			if(res != OK) {
+				stderr.printf("Error al preparar: %d: %s\n", db.errcode(), db.errmsg());
+				return;
+			}
+
+			stmt.bind_int(1, person.id_person);
+			stmt.bind_int(2, group.id_group);
+
+			res = stmt.step();
+			if(res != DONE) {
+				stderr.printf("Error al ejecutar la inserción: %s\n", db.errmsg());
+				return;
+			}
+			
+			return;
 		}
 
 		public void eliminar_person(Person p) {
@@ -548,6 +603,47 @@ namespace Bdm {
 				stderr.printf("Error al ejecutar la eliminación: %s\n", db.errmsg());
 			}
 			
+			return;
+		}
+
+		public void eliminar_person_in_group(Person p, Group g) {
+			string eliminar = "DELETE FROM in_group WHERE id_person = ? AND id_group = ?;";
+			Statement stmt;
+
+			int res = db.prepare_v2(eliminar, eliminar.length, out stmt);
+			if (res != OK) {
+				stderr.printf("Error: %d: %s\n", db.errcode(), db.errmsg());
+				return;
+			}
+
+			stmt.bind_int(1, p.id_person);
+			stmt.bind_int(2, g.id_group);
+
+			res = stmt.step();
+			if (res != DONE) {
+				stderr.printf("Error al quitar persona del grupo: %s\n", db.errmsg());
+			}
+		}
+
+		public void eliminar_persons_in_group(Group group) {
+			if (group.id_group == null)
+				return;
+			
+			string eiminar = "DELETE FROM in_group WHERE id_group = ?;";
+			Statement stmt;
+			
+			int res = db.prepare_v2(eliminar, eliminar.length, out stmt);
+			if (res != OK) {
+				stderr.printf("Error: %d: %s\n", db.errcode(), db.errmsg());
+				return;
+			}
+
+			stmt.bind_int(1, group.id_group ?? -1);
+
+			res = stmt.step();
+			if (res != DONE) {
+				stderr.printf("Error al quitar persona del grupo: %s\n", db.errmsg());
+			}
 			return;
 		}
 		
@@ -633,8 +729,9 @@ namespace Bdm {
 		  base de datos
 		 */
 		public int id_person(Person person) {
+			
 			string buscar =
-				"SELECT id_person FROM persons WHERE id_person = ?;";
+				"SELECT id_person FROM persons WHERE stage_name = ? LIMIT 1;";
 			Statement stmt_buscar;
 			
 			int res = db.prepare_v2(buscar, buscar.length, out stmt_buscar);
@@ -643,7 +740,7 @@ namespace Bdm {
 				return -1;
 			}
 
-			stmt_buscar.bind_int(1, person.id_person);
+			stmt_buscar.bind_text(1, person.stage_name);
 			
 			res = stmt_buscar.step();
 			if(res == ROW) {
@@ -658,7 +755,7 @@ namespace Bdm {
 		 */
 		public int id_group(Group group) {
 			string buscar =
-				"SELECT id_group FROM groups WHERE id_group = ?;";
+				"SELECT id_group FROM groups WHERE name = ? LIMIT 1;";
 			Statement stmt_buscar;
 			
 			int res = db.prepare_v2(buscar, buscar.length, out stmt_buscar);
@@ -667,7 +764,7 @@ namespace Bdm {
 				return -1;
 			}
 
-			stmt_buscar.bind_int(1, group.id_group);
+			stmt_buscar.bind_text(1, group.name);
 			
 			res = stmt_buscar.step();
 			if(res == ROW) {
@@ -676,6 +773,25 @@ namespace Bdm {
 			return -1;
 		}
 
-		
+		public bool person_in_group(Person p, Group g) {
+			string buscar =
+				"SELECT id_person FROM in_group WHERE id_person = ? AND id_group = ? LIMIT 1;";
+			Statement stmt_buscar;
+			
+			int res = db.prepare_v2(buscar, buscar.length, out stmt_buscar);
+			if(res != OK) {
+				stderr.printf("Error al preparar: %d: %s\n", db.errcode(), db.errmsg());
+				return false;
+			}
+
+			stmt_buscar.bind_int(1, p.id_person);
+			stmt_buscar.bind_int(2, g.id_group);
+			
+			res = stmt_buscar.step();
+			if(res == ROW) {
+				return true;
+			}
+			return false;
+		}
 	}
 }
