@@ -629,7 +629,7 @@ namespace Bdm {
 			if (group.id_group == null)
 				return;
 			
-			string eiminar = "DELETE FROM in_group WHERE id_group = ?;";
+			string eliminar = "DELETE FROM in_group WHERE id_group = ?;";
 			Statement stmt;
 			
 			int res = db.prepare_v2(eliminar, eliminar.length, out stmt);

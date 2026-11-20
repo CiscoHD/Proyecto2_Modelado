@@ -7,6 +7,7 @@ src = [
     'vista/dialogo_edicion_album.vala',
     'vista/dialogo_edicion_performer.vala',
     'controlador/controlador_botones.vala',
+    'controlador/notificador.vala',     
     'modelo/minero.vala',
     'modelo/editor.vala',
     'modelo/rola.vala',
@@ -17,7 +18,6 @@ src = [
     'modelo/dao.vala',
     'modelo/resultado_insertar.vala',
     'modelo/resultado_editar_rola.vala',
-    'modelo/notificador.vala',
     'modelo/id3_util.c'
 ]
 
