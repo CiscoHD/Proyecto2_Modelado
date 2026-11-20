@@ -5,10 +5,17 @@ namespace Bdm {
 		public int?   id_group   { get; set;}
 		public string start_date { get; set;}
 		public string end_date   { get; set;}
+		
+		public List<Person> integrantes;
 
 		public Group() {
 			this.id_type = 1; // Type: 1 -> "Group"
+			this.id_group = -1;
+			this.start_date = "Unknown";
+			this.end_date = "Unknown";
+			this.integrantes = new List<Person>();
 		}
+		
 		public override bool equals (Performer? other) {
 			if (!base.equals (other))
 				return false;
@@ -63,6 +70,16 @@ namespace Bdm {
 				this.group.end_date = end_date;
 			else
 				this.group.end_date = "Unknown";
+			return this;
+		}
+
+		public GroupBuilder with_integrantes(List<Person> integrantes) {
+			if (integrantes != null) {
+				foreach(Person p in integrantes) {
+					stdout.printf("Se agrega %s a grupo a %s\n", p.stage_name, this.group.name);
+					this.group.integrantes.append(p);
+				}
+			}
 			return this;
 		}
 

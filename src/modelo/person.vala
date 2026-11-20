@@ -10,6 +10,11 @@ namespace Bdm {
 
 		public Person() {
 			this.id_type = 0; // Type: 0 -> "Person"
+			this.id_person = -1;
+			this.stage_name = "Unknown";
+			this.real_name  = "Unknown";
+			this.birth_date = "Unknown";
+			this.death_date = "Unknown";
 		}
 
 		public override bool equals (Performer? other) {
@@ -49,13 +54,8 @@ namespace Bdm {
 		}
 
 		public PersonBuilder with_name(string? name) {
-			if (name != null && name.strip().length != 0) {
+			if (name != null && name.strip().length != 0) 
 				this.person.name = name;
-				if (this.person.stage_name == null)
-					this.person.stage_name = name;
-			} else {
-				this.person.name = "Unknown";
-			}
 			return this;
 		}
 
@@ -63,8 +63,6 @@ namespace Bdm {
 			if (stage_name != null && stage_name.strip().length != 0) {
 				this.person.stage_name = stage_name;
 				this.person.name = stage_name; 
-			} else {
-				this.person.stage_name = "Unknown";
 			}
 			return this;
 		}
@@ -72,24 +70,18 @@ namespace Bdm {
 		public PersonBuilder with_real_name(string? real_name) {
 			if (real_name != null && real_name.strip().length != 0)
 				this.person.real_name = real_name;
-			else
-				this.person.real_name = "Unknown";
 			return this;
 		}
 
 		public PersonBuilder with_birth_date(string? birth_date) {
 			if (birth_date != null && birth_date.strip().length != 0)
 				this.person.birth_date = birth_date;
-			else
-				this.person.birth_date = "Unknown";
 			return this;
 		}
 
 		public PersonBuilder with_death_date(string? death_date) {
 			if (death_date != null && death_date.strip().length != 0)
 				this.person.death_date = death_date;
-			else
-				this.person.death_date = "Unknown";
 			return this;
 		}
 
