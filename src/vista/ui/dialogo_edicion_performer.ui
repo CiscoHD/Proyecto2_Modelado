@@ -74,9 +74,9 @@
                         <property name="model">
                           <object class="GtkStringList">
                             <items>
-                              <item>Person</item>
-                              <item>Group</item>
-                              <item>Unknown</item>
+                              <item>Persona</item>
+                              <item>Grupo</item>
+                              <item>Desconocido</item>
                             </items>
                           </object>
                         </property>
@@ -100,7 +100,7 @@
                             <property name="row-spacing">10</property>
                             <child>
                               <object class="GtkLabel">
-                                <property name="label">Stage Name:</property>
+                                <property name="label">Nombre Artistico:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
@@ -121,7 +121,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="label">Real Name:</property>
+                                <property name="label">Nombre Real:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
@@ -142,7 +142,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="label">Birth Date:</property>
+                                <property name="label">Nacimiento:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
@@ -163,7 +163,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel">
-                                <property name="label">Death Date:</property>
+                                <property name="label">Defuncion:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
@@ -299,7 +299,7 @@
                                   <object class="GtkBox">
                                     <property name="spacing">6</property>
                                     <child>
-                                      <object class="GtkEntry" id="entry_add_in_group">
+                                      <object class="GtkEntry" id="entry_agregar_integrante">
                                         <property name="hexpand">True</property>
                                         <property name="margin-bottom">3</property>
                                         <property name="margin-start">6</property>
@@ -308,7 +308,7 @@
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="btn_agregar_miembro">
+                                      <object class="GtkButton" id="btn_agregar_integrante">
                                         <property name="icon-name">list-add-symbolic</property>
                                         <property name="margin-bottom">3</property>
                                         <property name="margin-end">6</property>
@@ -320,7 +320,7 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkListBox"/>
+                              <object class="GtkListBox" id="lista_integrantes"/>
                             </child>
                           </object>
                         </property>
@@ -331,7 +331,7 @@
                       <object class="GtkStackPage" id="vista_unknown">
                         <property name="child">
                           <object class="GtkLabel">
-                            <property name="label">No hay información adicional para este performer.</property>
+                            <property name="label">No hay información adicional para este interprete.</property>
                             <property name="margin-bottom">20</property>
                             <property name="margin-top">20</property>
                             <style>

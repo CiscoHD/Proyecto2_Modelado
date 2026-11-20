@@ -134,7 +134,7 @@ namespace Gui {
 		}
 
 		private void on_rola_editada(ResultadoEditarRola resul) {
-			int indice = resul.rola.id;
+			int indice = resul.rola.id - 1;
 
 			ListBoxRow? fila_anterior = lista_rolas.get_row_at_index(indice);
 			if(fila_anterior != null) {
