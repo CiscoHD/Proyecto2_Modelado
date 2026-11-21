@@ -76,7 +76,6 @@ namespace Bdm {
 		public GroupBuilder with_integrantes(List<Person> integrantes) {
 			if (integrantes != null) {
 				foreach(Person p in integrantes) {
-					stdout.printf("Se agrega %s a grupo a %s\n", p.stage_name, this.group.name);
 					this.group.integrantes.append(p);
 				}
 			}
