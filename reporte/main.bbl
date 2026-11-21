@@ -16,5 +16,178 @@
   {}
 \endgroup
 
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{becerril}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=e8d65c5d7d8314875951b4c99b6fe0c4}{%
+           family={Becerril\bibnamedelima Fuentes},
+           familyi={B\bibinitperiod\bibinitdelim F\bibinitperiod},
+           given={Kimberly},
+           giveni={K\bibinitperiod}}}%
+        {{hash=8e450d2b94aff9b6040b711e747f4b96}{%
+           family={Peláez},
+           familyi={P\bibinitperiod},
+           given={Canek},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Facultad de Ciencias, UNAM.}%
+      }
+      \strng{namehash}{7fb32fa90b156b35eda53c6faf538d5a}
+      \strng{fullhash}{7fb32fa90b156b35eda53c6faf538d5a}
+      \strng{fullhashraw}{7fb32fa90b156b35eda53c6faf538d5a}
+      \strng{bibnamehash}{7fb32fa90b156b35eda53c6faf538d5a}
+      \strng{authorbibnamehash}{7fb32fa90b156b35eda53c6faf538d5a}
+      \strng{authornamehash}{7fb32fa90b156b35eda53c6faf538d5a}
+      \strng{authorfullhash}{7fb32fa90b156b35eda53c6faf538d5a}
+      \strng{authorfullhashraw}{7fb32fa90b156b35eda53c6faf538d5a}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{123-456-78-9012-3}
+      \field{title}{Notas para el curso de modelado y programación}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://repositorio.unam.mx/contenidos/3640772
+      \endverb
+      \verb{url}
+      \verb https://repositorio.unam.mx/contenidos/3640772
+      \endverb
+    \endentry
+    \entry{id3}{misc}{}{}
+      \field{sortinit}{I}
+      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://id3.org/id3v2.3.0}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{ID3}
+      \true{nocite}
+    \endentry
+    \entry{leslie2002mad}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=87d50e3c61c3c8ec0aeb7342cdb0524f}{%
+           family={Leslie},
+           familyi={L\bibinitperiod},
+           given={Rob},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \strng{fullhash}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \strng{fullhashraw}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \strng{bibnamehash}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \strng{authorbibnamehash}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \strng{authornamehash}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \strng{authorfullhash}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \strng{authorfullhashraw}{87d50e3c61c3c8ec0aeb7342cdb0524f}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://lists.mars.org/hyperkitty/list/mad-dev@lists.mars.org/message/RW3EO2HZZ3MWOLGIZ6P4DQV62XJYRLIK/}}
+      \field{month}{1}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{[mad-dev] libid3tag demystified}
+      \field{year}{2002}
+      \true{nocite}
+    \endentry
+    \entry{shvets2014refactoring}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=96dfef298f5fd8385c9bda34f6502377}{%
+           family={Shvets},
+           familyi={S\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{96dfef298f5fd8385c9bda34f6502377}
+      \strng{fullhash}{96dfef298f5fd8385c9bda34f6502377}
+      \strng{fullhashraw}{96dfef298f5fd8385c9bda34f6502377}
+      \strng{bibnamehash}{96dfef298f5fd8385c9bda34f6502377}
+      \strng{authorbibnamehash}{96dfef298f5fd8385c9bda34f6502377}
+      \strng{authornamehash}{96dfef298f5fd8385c9bda34f6502377}
+      \strng{authorfullhash}{96dfef298f5fd8385c9bda34f6502377}
+      \strng{authorfullhashraw}{96dfef298f5fd8385c9bda34f6502377}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://refactoring.guru/es}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{Refactoring Guru. Patrones de Diseño}
+      \field{year}{2014}
+      \true{nocite}
+    \endentry
+    \entry{sqlite}{misc}{}{}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.sqlite.org/index.html}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{SQLite}
+      \true{nocite}
+    \endentry
+    \entry{tenacityteamrepository}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=2d302ef52c330c29dd051280e06a40c8}{%
+           family={tenacityteam},
+           familyi={t\bibinitperiod}}}%
+      }
+      \strng{namehash}{2d302ef52c330c29dd051280e06a40c8}
+      \strng{fullhash}{2d302ef52c330c29dd051280e06a40c8}
+      \strng{fullhashraw}{2d302ef52c330c29dd051280e06a40c8}
+      \strng{bibnamehash}{2d302ef52c330c29dd051280e06a40c8}
+      \strng{authorbibnamehash}{2d302ef52c330c29dd051280e06a40c8}
+      \strng{authornamehash}{2d302ef52c330c29dd051280e06a40c8}
+      \strng{authorfullhash}{2d302ef52c330c29dd051280e06a40c8}
+      \strng{authorfullhashraw}{2d302ef52c330c29dd051280e06a40c8}
+      \field{sortinit}{t}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://codeberg.org/tenacityteam/libid3tag}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{Repository: libid3tag}
+      \true{nocite}
+    \endentry
+    \entry{valadoc}{misc}{}{}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://docs.vala.dev/}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{Vala Documentation}
+      \true{nocite}
+    \endentry
+    \entry{valarefman}{misc}{}{}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://gnome.pages.gitlab.gnome.org/vala/manual/index.html}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{Vala Reference Manual}
+      \true{nocite}
+    \endentry
+    \entry{valapkgdoc}{misc}{}{}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://valadoc.org/index.htm}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{Valadoc}
+      \true{nocite}
+    \endentry
+    \entry{w3schools}{misc}{}{}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.w3schools.com/sql/default.asp}}
+      \field{note}{Accessed: 2026-11-20}
+      \field{title}{W3Schools. SQL Tutorial}
+      \true{nocite}
+    \endentry
+  \enddatalist
+\endrefsection
 \endinput
 

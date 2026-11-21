@@ -12,7 +12,7 @@
 \setlength{\columnsep}{14pt}
 
 % --- Archivo de bibliografía ---
-\addbibresource{refs.bib}
+\addbibresource{references.bib}
 
 % --- Inicio del documento ---
 \begin{document}
@@ -121,7 +121,6 @@
     \item Consultar títulos, intérpretes o álbumes de las canciones.
     \end{enumerate}
 
-    %% Quiero saber si es necesario agregar más. 
     En ese sentido debe proveer información clara sobre el estado
     actual de la base de datos. Además los elementos interactivos
     tiene que estar organizados de manera que se pueda diferenciar las
@@ -136,7 +135,6 @@
     
     Se intentará leer las siguientes etiquetas ID3v2.4:
 
-    %% Mantener tal cual
     \begin{enumerate}
     \item \textbf{TPE1}, \textit{Lead performer(s)/Soloist(s)}, el
       intérprete de la canción.
@@ -153,7 +151,6 @@
       formato “3/10”, tercera de diez pistas).
     \end{enumerate}
 
-    %% Quiero decirlo de otra forma
     Además de las etiquetas id3, el proceso de minado también debe
     obtener datos como:
     
@@ -164,8 +161,6 @@
     \item Año de creación del archivo mp3
     \end{enumerate}
 
-    %% Me gustaría dejar en claro la necesidad del Notificador sin
-    %% introducirlo formalmente hasta el Diseño. 
     Cada que se agregue correctamente un registro a la base de datos
     el minero debe poder informar a la Vista los cambios que se
     hicieron en la base de datos.
@@ -233,21 +228,426 @@
     estandarizada para insertar, actualizar y consultar información
     sin que estos necesiten conocer los detalles. 
 
-    \subsubsection{Reproductor}
-
-    Finalmente, el \textbf{Reproductor} tiene la tarea de gestionar el
-    flujo de audio de los archivos seleccionados por el usuario. Debe
-    ser capaz de iniciar, pausar y detener la reproducción multimedia
-    comunicándose de manera independiente con el resto del sistema,
-    asegurando que la escucha de la biblioteca musical no interrumpa
-    la exploración ni la edición de la base de datos en la Vista.
-
     \subsection{Diseño}
 
+    Habiendo establecido las responsabilidades de cada módulo en la
+    etapa de análisis, es necesario buscar una manera de organizar la
+    interacción entre los mismos. Para resolver este problema, la
+    estructura de la aplicación se fundamenta en el patrón de diseño
+    Modelo-Vista-Controlador (MVC).
+
+    La adopción del patrón MVC se justifica bajo el principio de que
+    la información gestionada por el programa debe estar aislada de su
+    representación y de los mecanismos de interacción del usuario
+    \cite{becerril}. De acuerdo con este paradigma, el sistema se
+    divide en tres capas fundamentales: el \textit{modelo}, encargado
+    de encapsular los datos puros y los algoritmos con que se operan;
+    la \textit{vista}, que constituye la salida inmediata y perceptiva
+    hacia el usuario; y el \textit{controlador}, que actúa como
+    intermediario entre los otros dos. Este último gestiona las
+    entradas de la vista para actualizar el modelo y se asegura de que
+    cualquier cambio asíncrono en los datos se refleje
+    gráficamente. Esta separación evita que el modelo se contamine con
+    lógicas de interfaz y facilitando su portabilidad \cite{becerril}.
+
+     \begin{figure}[htbp]
+		\centering
+        \includesvg[width=0.5\textwidth]{img/div-mvc-musica.svg}
+		\caption{Diagrama de la división del sistema.}
+		\label{fig:div_mvc}
+	\end{figure}
+
+    Veamos como, en el contexto de nuestra base de datos musical, los
+    componentes analizados previamente resuelven sus interacciones
+    acoplándose a este patrón.
+
+    \subsubsection{Modelo}
+
+    Como se estableció previamente, el Modelo encapsula la gestión y
+    el estado de la colección musical. Dada la complejidad de la
+    información que debe manejar, nos apoyaremos en una serie de
+    patrones de diseño que garantizan la cohesión, el bajo
+    acoplamiento y la integridad de los datos.
+
+    Para el tránsito de la información entre la base de datos, se
+    implementó el patrón de diseño \textit{Data Transfer Object}
+    (DTO). Este patrón se materializa como se muestra en la Figura
+    \ref{fig:DTOs} mediante las clases \texttt{Rola}, \texttt{Album},
+    \texttt{Performer}, \texttt{Person} y \texttt{Group} . Su diseño
+    se simplifica dado que su único propósito es empaquetar conjuntos
+    de atributos (como el título, el año o la ruta del archivo) para
+    que puedan ser transportados en una sola llamada.
+
+    \begin{figure}[htbp]
+      \centering
+        \includesvg[width=\columnwidth, inkscapelatex=false]{img/DTOs.svg}
+        \caption{Diagrama UML de clases DTO.}
+        \label{fig:DTOs}
+    \end{figure}
+    
+    Dentro de esta estructura, destaca la jerarquía de herencia
+    diseñada para los intérpretes musicales. Una pista de audio
+    siempre es ejecutada por un intérprete genérico. No obstante,
+    puede ser un individuo o un grupo. Para resolver esto, se abstrae
+    la clase base \texttt{Performer} (que contiene atributos comunes
+    como el identificador y el nombre general), de la cual heredan las
+    clases \texttt{Person} (que añade metadatos específicos como fecha
+    de nacimiento/defunción y nombre real/artístico) y \texttt{Group}
+    (que incluye fecha de incio/termino y una lista de sus
+    integrantes). Esta jerarquización permite aplicar polimorfismo:
+    las demás entidades del sistema, como la clase \texttt{Rola},
+    pueden referenciar a un \texttt{Performer} de manera genérica,
+    mientras que el sistema conserva la capacidad de tratar los
+    detalles específicos de personas o grupos según sea necesario.
+
+    Ahora bien, las responsabilidades que en el análisis recaían sobre
+    el \textbf{Manejador de la Base de Datos}, se delegan a la clase
+    \texttt{Dao}. Esta decisión obedece al patrón \textit{Data Access
+      Object} (DAO), el cual dicta que toda la lógica de acceso a
+    datos (consultas, inserciones, actualizaciones y eliminaciones)
+    debe aislarse de los demás componentes del sistema.
+
+    Así, el \texttt{Dao} traduce los objetos DTO hacia la base de
+    datos (y viceversa). Esto presenta una ventaja fundamental:
+    componentes funcionales como el \texttt{Minero} o el
+    \texttt{Editor} no necesitan conocer los detalles de la base de
+    datos para funcionar. Si en el futuro se requiriera cambiar el
+    motor de almacenamiento, los cambios se limitarían exclusivamente
+    a la implementación de la clase \texttt{Dao}, dejando el resto del
+    modelo intacto.
+
+    Las clases \texttt{Minero} y \texttt{Editor} intervienen como se
+    muestra en la Figura \ref{fig:Modelo}. La primera se encarga de
+    recorrer las estructuras de directorios, extraer metadatos puros
+    de los archivos multimedia y transformarlos en objetos DTO
+    validos. Por su parte, el segundo centraliza la modificación de
+    registros. Por ejemplo, al editar un intérprete, el Edito revalúa
+    escenarios complejos: si un intérprete cambia de ser una
+    \texttt{Person} a \texttt{Group}, el Editor se encarga de la
+    eliminación de datos obsoletos y de la creación de nuevas
+    asociaciones, delegando posteriormente las operaciones de
+    persistencia en la base de datos al \texttt{Dao}.
+
+    Para mantener separado el Modelo y evitar que este deba invocar
+    directamente a la Vista o al Controlador cuando ocurre un cambio
+    en los datos, se integró el patrón de diseño \textit{Observer}
+    mediante la figura de un \textbf{Notificador} que pertenecerá al
+    \textbf{Controlador}.
+
+    \begin{figure}[htbp]
+      \centering
+        \includesvg[width=\columnwidth, inkscapelatex=false]{img/Modelo.svg}
+        \caption{Diagrama UML de clases principales del Modelo.}
+        \label{fig:Modelo}
+    \end{figure}
+
+    \subsubsection{Vista}
+    
+    La capa de presentación tiene la responsabilidad de traducir la
+    información provista por el Modelo en elementos visuales, así como
+    de capturar las interacciones del usuario. La interfaz gráfica se
+    diseñó dividiendo el espacio de trabajo en dos secciones
+    funcionales: superior e inferior.
+
+    La barra superior determina el flujo principal de la
+    aplicación. Se subdivide lógicamente en tres segmentos:
+
+    \begin{itemize}
+    \item \textbf{Izquierda:} Aloja los controles de navegación
+      principal, permitiendo alternar entre vistas rápidas: la vista
+      general de Canciones, la colección de Álbumes y el catálogo de
+      Intérpretes. Además, contiene las acciones de entrada,
+      destacando el botón para accionar el proceso de minado (o
+      re-minado) de un directorio, y el acceso a la herramienta de
+      consulta (búsqueda).
+    \item \textbf{Centro:} Reservado para la identidad de la
+      aplicación, mostrando el título del sistema.
+    \item \textbf{Derecha:} Incluye el control para finalizar la
+      ejecución del programa.
+    \end{itemize}
+
+    La parte inferior de la interfaz es la encargada de mostrar los
+    resultados de las consultas o el contenido de las vistas
+    rápidas. Para optimizar la experiencia de usuario, la disposición
+    de los datos cambia dependiendo de la entidad que se esté
+    visualizando:
+    
+    \begin{itemize}
+    \item \textbf{Vista de Canciones (Principal):} Muestra el
+      contenido en un formato de lista secuencial, donde cada fila
+      expone los metadatos esenciales en el orden: imagen genérica,
+      título, intérprete, álbum y género.
+    \item \textbf{Vista de Álbumes:} Cambia a una disposición en
+      cuadrícula, exhibiendo tarjetas que contienen una imagen
+      cuadrada representativa, el nombre del álbum y su respectivo
+      año.
+    \item \textbf{Vista de Intérpretes:} Mantiene la cuadrícula
+      anterior, pero presenta un formato de imagen circular acompañado
+      únicamente por el nombre del intérprete.
+    \end{itemize}
+
+    La manera en que se proveen los resultados en el contenedor
+    central está íntimamente ligada a las capacidades de consulta. La
+    barra de búsqueda actúa en las tres vistas. Mientras que en la
+    vista de canciones se aprovecha todos los campos que identifican a
+    las mismas, en las vistas de álbumes e intérpretes el filtro opera
+    sobre los rubros expuestos.
+
+    Para cumplir con los requerimientos de actualización de registros,
+    se evitó saturar la interfaz principal con formularios
+    estáticos. En su lugar, se optó por un diseño basado en
+    interacciones contextuales. Por comodidad y agilidad, el usuario
+    puede realizar un clic derecho sobre cualquier elemento gráfico
+    (una fila de canción, una tarjeta de álbum o de intérprete) para
+    desplegar un menú emergente. Al seleccionar la opción de
+    ``Editar'', el sistema lanza un diálogo flotante que contiene los
+    campos específicos de la entidad seleccionada, permitiendo
+    modificar sus atributos de forma aislada antes de solicitar la
+    actualización al Editor.
+
+    \begin{figure}[htbp]
+      \centering
+        \includesvg[width=\columnwidth, inkscapelatex=false]{img/ClasesVista.svg}
+        \caption{Diagrama UML de clases principales de la Vista.}
+        \label{fig:Vista}
+    \end{figure}
+    
+    \subsubsection{Controlador}
+
+    El propósito fundamental del \textbf{Controlador} es garantizar
+    una estricta separación entre el Modelo y la Vista.  Para lograr
+    este nivel de desacoplamiento, el diseño del controlador se divide
+    funcionalmente en dos mecanismos principales: la gestión de
+    interacciones de entrada y la propagación de eventos de salida.
+
+    El Controlador asume la responsabilidad de interceptar los eventos
+    generados por el usuario desde la Vista, tales como la petición de
+    minar un directorio o la solicitud de edición sobre canciones,
+    álbumes e intérpretes. Al capturar estas acciones, el sistema
+    delega la ejecución de la lógica al Modelo, conectando los eventos
+    de la interfaz con las operaciones de actualización
+    correspondientes.
+
+    Por otro lado, para notificar a la Vista sobre los cambios
+    ocurridos en el Modelo sin que este último deba conocer la
+    existencia de la interfaz, se consolidó el patrón
+    \textit{Observer} a través de un componente centralizado de
+    notificación al cual llamaremos \textbf{Notificador}.
+    
+    Este mecanismo establece el uso de orientación a eventos. Cuando
+    el \texttt{Minero} inserta exitosamente una nueva canción, o
+    cuando el \texttt{Editor} finaliza la actualización de un objeto,
+    estos le indican al Notificador que emita una señal. Cualquier
+    componente externo interesado en el estado de la base de datos
+    puede suscribirse a estas notificaciones.
+
+    Dada la naturaleza de la información musical, las operaciones
+    suelen tener efectos secundarios. Por ejemplo, al insertar una
+    nueva canción o editar los metadatos de una existente, es posible
+    que implícitamente se descubra un nuevo álbum o intérprete. Para
+    manejar estos escenarios, el diseño integra estructuras de
+    resultados encapsuladas que viajan junto con las
+    notificaciones. Estos objetos de estado empaquetan la entidad
+    procesada junto con banderas que indican, con precisión, si la
+    operación originó la creación de registros adicionales.
+    
     \section{Implementación}
 
+    En esta sección hablaré de las cosas que, para mí, fueron más
+    complejas o que más me sorprendieron. Para ello, detallaremos las
+    bibliotecas y mecanismos del lenguaje empleados, así como la forma
+    en que se resolvieron algunos de los problemas técnicos propios de
+    integrar Vala, C, GTK4 y SQLite3.
+
+    \subsection{Elección de tecnologías}
+
+    Para empezar, se optó por utilizar \textbf{Vala} como lenguaje
+    principal de desarrollo en conjunto con \textbf{C}. Lo anterior ya
+    que Vala permite programar bajo un paradigma orientado a objetos,
+    compilando directamente a código C sobre el sistema de tipos
+    \texttt{GObject}, mientras que no queria dejar pasar la
+    oportunidad de utilizar archivos VAPI (\textit{Vala Application
+      Programming Interface}) para vincular código C directamente en
+    Vala.
+    
+    Nuevamente se usa \textbf{Meson} como sistema de construcción.
+    Nos permitió abilitar los compiladores de C y Vala, declarar las
+    dependencias \texttt{glib-2.0}, \texttt{gobject-2.0} y
+    \texttt{gio-2.0} para las estructuras de datos, hilos y manejo de
+    archivos; \texttt{gtk4} para la interfaz gráfica; \texttt{sqlite3}
+    como motor de base de datos; y \texttt{id3tag}
+    (\texttt{libid3tag}) para la lectura de metadatos de archivos de
+    mp3.
+
+    Adicionalmente, para evitar que el programa dependa de rutas
+    relativas externas al ejecutarse desde cualquier directorio, se
+    empleó el sistema de empaquetado de recursos
+    \texttt{GResource}. Durante la compilación, tanto las plantillas
+    XML de la interfaz gráfica como el archivo con el esquema inicial
+    de la base de datos (\texttt{rolas.sql}) se compilan e incrustan
+    dentro del binario final, permitiendo cargarlos directamente desde
+    memoria en tiempo de ejecución (Una maravilla).
+
+    \subsection{Manejo de base de datos (SQLite3)}
+
+    Toda la interacción con la base de datos se centralizó en la clase
+    \texttt{Dao}, implementada bajo el patrón \textit{Singleton} para
+    garantizar un único punto de acceso a la conexión.
+    
+    Todas las operaciones de inserción, consulta, actualización y
+    eliminación se implementaron utilizando sentencias preparadas
+    (\texttt{Sqlite.Statement}), lo que nos permite enlazar cada
+    parámetro de la sentencia SQL de manera arbitraria, estandarizando
+    la forma en que se realizan las consultas. Esto asegura la
+    integridad de los tipos de datos a consultar.
+
+    Uno de los retos técnicos más relevantes consistió en mapear
+    intérpretes (bien como persona o grupo) hacia tablas sin perder
+    información. Para resolver esto, las consultas de lectura como
+    \texttt{buscar\_rolas()} y \texttt{buscar\_performers()} emplean
+    cláusulas \texttt{LEFT JOIN} entre la tabla base
+    \texttt{performers} y las tablas especializadas \texttt{persons} y
+    \texttt{groups}. Al recorrer cada fila resultante, el sistema
+    inspecciona el atributo \texttt{id\_type} e instancia la subclase
+    concreta apoyándose en el patrón \textit{Builder}
+    (\texttt{PersonBuilder}, \texttt{GroupBuilder} y
+    \texttt{PerformerBuilder}).
+
+    Asimismo, para permitir la existencia de personas que no
+    interpretan canciones y la pertenencia de integrantes en grupos,
+    se gestionaron los vínculos a través de la tabla intermedia
+    \texttt{in\_group}. Cuando el usuario confirma una edición, la
+    clase \texttt{Editor} coordina con el \texttt{Dao} la inserción o
+    actualización de cada entidad, así como la sincronización de
+    miembros (\texttt{agregar\_person\_in\_group()} y
+    \texttt{eliminar\_person\_de\_group()}) sin eliminar los registros
+    base de la tabla \texttt{persons}.
+
+    \subsection{Minería de archivos MP3}
+
+    La extracción de metadatos fue implementada en el componente
+    \texttt{Minero} apoyándose en las utilidades de sistema de
+    archivos de \texttt{GIO} (\texttt{GLib.File} y
+    \texttt{FileEnumerator}) y en la biblioteca \texttt{libid3tag}. Al
+    recibir un directorio, el minero recorre iterativamente su
+    estructura. Por cada archivo válido, infiere automáticamente dos
+    rutas fundamentales: la ruta absoluta hacia el archivo de audio
+    para la entidad \texttt{Rola}, y la ruta del directorio contenedor
+    para asociarla a la entidad \texttt{Album}.
+
+    Para leer las etiquetas ID3v2.4 sin modificar los archivos
+    originales, cada pista se abre en modo de solo lectura
+    (\texttt{ID3\_FILE\_MODE\_READONLY}). A partir de la etiqueta
+    obtenida, se extraen los marcos ya especificados en el
+    Análisis. Antes de insertar una nueva canción, el minero consulta
+    al \texttt{Dao} para reutilizar álbumes o intérpretes ya
+    existentes y evitar duplicados.
+
+    El controlador orquesta en un hilo de ejecución diferente el
+    proceso de minado. De este modo, se evita que las operaciones de
+    lectura en disco y escritura en la base de datos congelen la
+    interfaz gráfica. Dado que GTK4 no permite modificar widgets
+    directamente desde hilos secundarios, cada vez que el minero
+    inserta un registro, la clase \texttt{Notificador} programa la
+    emisión de la señal en el hilo principal de eventos utilizando
+    \texttt{GLib.Idle.add()}.
+
+    \subsection{Interfaz gráfica en GTK4}
+
+    El diseño final de la interfaz se implementó con el software de
+    creación de interfaces de usuario: Cambalache. Usando las
+    anotaciones de Vala \texttt{[GtkTemplate]} y \texttt{[GtkChild]},
+    se nos permite referenciar directamente los componentes visuales
+    definidos en los archivos \texttt{.ui} (generados por Cambalache)
+    sin saturar el código fuente con instanciación manual de
+    contenedores.
+
+    En la ventana principal, la visualización de datos se resolvió
+    mediante un \texttt{Gtk.ListBox} (\texttt{lista\_rolas}) para el
+    listado secuencial de canciones y dos contenedores
+    \texttt{Gtk.FlowBox} para las cuadrículas de álbumes e
+    intérpretes.
+
+    Cuando el usuario escribe una consulta, el sistema construye
+    contenedores temporales con los resultados filtrados y reemplaza
+    dinámicamente la propiedad \texttt{child} de los
+    \texttt{Gtk.ScrolledWindow} correspondientes; al limpiar la barra
+    de búsqueda, se restituyen las referencias originales de manera
+    inmediata.
+
+    Las acciones de edición se integraron mediante controladores de
+    eventos \texttt{Gtk.GestureClick} configurados para responder al
+    botón derecho del ratón sobre cada fila o tarjeta desplegando un
+    menú contextual \texttt{Gtk.Popover} posicionado en las
+    coordenadas del clic.
+
+    Al seleccionar la edición de un intérprete, se despliega
+    \texttt{DialogoEdicionPerformer}, el cual enlaza un selector
+    \texttt{Gtk.DropDown} con un contenedor \texttt{Gtk.Stack} para
+    alternar dinámicamente entre los formularios
+    \texttt{vista\_person}, \texttt{vista\_group} y
+    \texttt{vista\_unknown}.
+
+    En el caso de los grupos, el diálogo mantiene una lista temporal
+    en memoria (\texttt{integrantes\_tmp}) sincornizada con un
+    \texttt{Gtk.ListBox} donde cada fila incorpora un botón para
+    eliminar integrantes antes de confirmar la operación. 
+
+    Finalmente, la comunicación entre el Modelo y la Vista se
+    materializó a través de la clase \texttt{Notificador}, la cual
+    utiliza señales nativas de \texttt{GLib.Object}
+    (\texttt{rola\_agregada}, \texttt{rola\_editada},
+    \texttt{album\_editado} y \texttt{performer\_editado}). Junto con
+    estas señales viajan objetos como \texttt{ResultadoInsertar} y
+    \texttt{ResultadoEditarRola}, lo que permite a \texttt{Ventana}
+    saber con exactitud si una edición o inserción generó un nuevo
+    álbum o intérprete y actualizar únicamente los elementos visuales
+    afectados.
+    
     \section{Conclusiones}
 
+    Este segundo proyecto fue, en comparación, más díficil que el
+    primero. El uso de una interfaz gráfica tan interconectada como la
+    que se solicitaba aumenta el número de casos que hay que tener en
+    cuenta. Por su parte el manejo de una base de datos relacional,
+    que si bien cuenta con pocas operaciones básicas, se vuelve
+    bastante confuso cuando las tablas aumentan en complejidad.
+
+    Un detalle del diseño que después entorpeció mucho el desarrollo,
+    fue el no separar en otras vistas las personas y los grupos. Hizo
+    que la complejidad de darle uso a la tabla \texttt{in\_group}
+    creciera mucho más de lo que en un principio esperaba.
+
+    El manejo de señales en Vala fue a la vez un milagro por
+    lo convenientes que resultan al manejar eventos de la interfaz,
+    pero un martirio a la hora de comprender como conectarlas y
+    enviarlas para realizar diversas acciones.
+
+    Varias cosas se quedaron en ideas o en diseño preliminar. La que
+    más pesa es el pequeño compilador de lenguaje natural a setencias
+    SQL, a pesar de no haber podido implementarlo encontré varios
+    recursos que me pueden ayudar a hacerlo en un futuro. La
+    reproducción de canciones es otra de esas cosas que tuve que
+    sacrificar por falta de planeación. Por último (y de la que tenía
+    muchas ganas) era de obtener y mostrar las imágenes que podían
+    venir como etiquetas ID3v2.4, prueba de ello es que reservé
+    espacios en todo el diseño de la interfaz con la esperanza de
+    poblarlo.
+
+    Lo que más rescato en está ocasión es lo mucho que pude investigar
+    sobre aplicaciones más enfocadas la experiencia del usuario. Me
+    sorprendieron mucho cosas como el uso que se les puede dar a las
+    funciones \textit{lamda}, como por ejemplo que ``guarden'' las
+    referencias de objetos que luego, sin importar cuando se ejecuten
+    dichas funciones, el objeto puede está dentro de ese contexto.
+
+    Me llevo una mejor experiencia al desarrollar este proyecto, en
+    parte por todo lo aprendido del pasado, pero sobre todo por el
+    tipo de cosas que me permitió aprender sobre bases de datos,
+    interfaces de usuario y el aprendizaje de un nuevo lenguaje de
+    programación. 
+
+    \nocite{*}
     \printbibliography[heading=bibintoc]
 	
 \end{document}

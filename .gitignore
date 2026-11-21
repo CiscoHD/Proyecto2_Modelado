@@ -4,6 +4,8 @@ reporte/auto/
 subprojects/
 !subprojects/*.wrap
 
+/svg-inkscape/
+*.synctex(busy)
 *_region_.tex
 *.aux
 *.bcf
